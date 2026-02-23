@@ -1,0 +1,264 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BeforeAfterSlider from '../components/BeforeAfterSlider';
+import ScrollFloat from '../components/ScrollFloat';
+import FloatingActionButton from '../components/FloatingActionButton';
+import EmptyState from '../components/EmptyState.astro';
+import { sanityClient, urlFor } from '../lib/sanity';
+import { getLanguage, t, getLocaleString } from '../lib/i18n';
+import type { HomepageSettings, Service } from '../lib/types';
+
+const lang = Astro.locals.lang as 'ar' | 'en' || 'ar';
+
+// Fetch homepage settings
+let homepageSettings: HomepageSettings | null = null;
+try {
+  homepageSettings = await sanityClient.fetch(`
+    *[_type == "homepageSettings"][0]{
+      ...,
+      featuredProjects[]->{
+        _id,
+        title,
+        slug,
+        beforeImage,
+        afterImage,
+        description,
+        relatedProducts[]->{
+          _id,
+          name,
+          slug
+        }
+      }
+    }
+  `);
+} catch (error) {
+  console.error('Failed to fetch homepage settings:', error);
+}
+
+// Fetch services
+let services: Service[] = [];
+try {
+  services = await sanityClient.fetch(`
+    *[_type == "service"] | order(order asc)
+  `);
+} catch (error) {
+  console.error('Failed to fetch services:', error);
+}
+
+const heroTitle = getLocaleString(homepageSettings?.heroTitle, lang);
+const heroDescription = getLocaleString(homepageSettings?.heroDescription, lang);
+const heroImage = homepageSettings?.heroImage;
+const featuredProjects = homepageSettings?.featuredProjects || [];
+---
+
+
+<BaseLayout title={t('home', lang)}>
+  <!-- Hero Section -->
+  <section class="relative min-h-[85vh] flex items-center bg-gradient-to-br from-extra-1 via-white to-secondary/10 dark:from-primary dark:via-primary/90 dark:to-accent/20 overflow-hidden">
+    <div class="container">
+      <div class="grid lg:grid-cols-2 gap-12 items-center py-20">
+        <!-- Left: Text Content (PC) / Bottom (Mobile) -->
+        <div class="space-y-8 animate-slide-in-left order-2 lg:order-1">
+          <ScrollFloat client:load float={50} className="no-reveal">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              {heroTitle || (
+                <span>
+                  {lang === 'ar' ? 'قصور جدة' : 'Jeddah Palaces'}
+                  <span class="block text-secondary mt-2">
+                    {lang === 'ar' ? 'للحجر الطبيعي' : 'Natural Stone'}
+                  </span>
+                </span>
+              )}
+            </h1>
+          </ScrollFloat>
+          
+          <ScrollFloat client:load float={30} className="no-reveal">
+            <p class="text-lg md:text-xl text-extra-2 dark:text-secondary/80 leading-relaxed max-w-xl">
+              {heroDescription || (lang === 'ar' 
+                ? 'نحول أحلامك إلى واقع من خلال تصميم وتوريد أفخم الديكورات والحجر الطبيعي'
+                : 'Transforming your dreams into reality with premium design and natural stone supply'
+              )}
+            </p>
+          </ScrollFloat>
+
+          <!-- Core Services -->
+          {services.length > 0 && (
+            <div class="space-y-3">
+              {services.slice(0, 3).map((service) => (
+                <div class="flex items-start gap-3 group">
+                  <svg class="w-6 h-6 text-secondary mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="text-base group-hover:text-secondary transition-colors">
+                    {getLocaleString(service.title, lang)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <!-- Contact Button (1 of 2) -->
+          <a 
+            href="/contact"
+            class="inline-block px-8 py-4 bg-gradient-to-r from-secondary to-accent text-white font-semibold rounded-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
+          >
+            {t('contactUs', lang)}
+          </a>
+        </div>
+
+        <!-- Right: Hero Image (PC) / Top (Mobile) -->
+        <div class="relative animate-slide-in-right order-1 lg:order-2">
+          {heroImage ? (
+            <div class="relative z-10">
+              <img 
+                src={urlFor(heroImage).width(800).url()}
+                alt={heroTitle || 'Jeddah Palaces'}
+                class="w-full h-auto max-h-[600px] object-contain drop-shadow-2xl"
+                loading="eager"
+              />
+            </div>
+          ) : (
+             <div class="relative z-10 aspect-square bg-gradient-to-br from-secondary/20 to-accent/20 rounded-full animate-pulse"></div>
+          )}
+          <!-- Decorative Elements -->
+          <div class="absolute -z-10 top-1/4 -start-10 w-72 h-72 bg-secondary/20 rounded-full blur-3xl"></div>
+          <div class="absolute -z-10 bottom-1/4 -end-10 w-96 h-96 bg-accent/20 rounded-full blur-3xl"></div>
+        </div>
+      </div>
+    </div>
+    
+    <FloatingActionButton client:load mode="full" scrollTargets={featuredProjects.map((_, i) => `project-${i}`)} lang={lang} />
+  </section>
+
+  <!-- Featured Projects Section -->
+  {featuredProjects.length > 0 ? (
+    <section class="py-20 bg-white dark:bg-primary/50">
+      <div class="container">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-5xl font-bold mb-4">
+            {lang === 'ar' ? 'مشاريعنا المميزة' : 'Featured Projects'}
+          </h2>
+          <p class="text-lg text-extra-2 dark:text-secondary/70">
+            {lang === 'ar' 
+              ? 'استكشف بعض أعمالنا الاستثنائية' 
+              : 'Explore some of our exceptional work'
+            }
+          </p>
+        </div>
+
+        <div class="space-y-32">
+          {featuredProjects.map((project, index) => (
+            <div key={project._id} id={`project-${index}`} class="scroll-snap-section scroll-mt-24">
+              <div class="grid lg:grid-cols-4 gap-8">
+                <!-- Before/After Slider (3/4 width on desktop) -->
+                <div class={`lg:col-span-3 order-2 ${index % 2 === 0 ? 'lg:order-1' : 'lg:order-2'}`}>
+                  <div class="aspect-video lg:aspect-[16/10] w-full">
+                    {project.afterImage ? (
+                      <BeforeAfterSlider 
+                        client:visible
+                        beforeImage={urlFor(project.beforeImage).width(1200).quality(90).url()}
+                        afterImage={urlFor(project.afterImage).width(1200).quality(90).url()}
+                        beforeAlt={lang === 'ar' ? 'قبل' : 'Before'}
+                        afterAlt={lang === 'ar' ? 'بعد' : 'After'}
+                      />
+                    ) : (
+                      <img
+                        src={urlFor(project.beforeImage).width(1200).quality(90).url()}
+                        alt={getLocaleString(project.title, lang)}
+                        class="w-full h-full object-cover rounded-lg"
+                        loading="lazy"
+                      />
+                    )}
+                  </div>
+                </div>
+
+                <!-- Project Info (1/4 width on desktop) -->
+                <div class={`lg:col-span-1 order-1 ${index % 2 === 0 ? 'lg:order-2' : 'lg:order-1'} space-y-6`}>
+                  <div>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-3">
+                      {getLocaleString(project.title, lang)}
+                    </h3>
+                    {project.description && (
+                      <p class="text-extra-2 dark:text-secondary/70 leading-relaxed mb-6">
+                        {getLocaleString(project.description, lang)}
+                      </p>
+                    )}
+
+                    <a 
+                      href={`/project/${project.slug.current}`}
+                      class="inline-flex items-center gap-2 text-secondary font-bold hover:text-accent transition-colors group"
+                    >
+                      <span>{lang === 'ar' ? 'المزيد عن المشروع' : 'More about the project'}</span>
+                      <svg class="w-4 h-4 transform rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </a>
+                  </div>
+
+                  {/* Materials Used */}
+                  {project.relatedProducts && project.relatedProducts.length > 0 && (
+                    <div>
+                      <h4 class="font-semibold mb-3 text-lg">
+                        {t('materialsUsed', lang)}
+                      </h4>
+                      <div class="flex flex-wrap gap-2">
+                        {project.relatedProducts.map((product) => (
+                          <a
+                            href={`/products/${product.slug.current}`}
+                            class="inline-block px-3 py-1.5 bg-secondary/10 hover:bg-secondary hover:text-white rounded-full text-sm font-medium transition-all duration-300"
+                          >
+                            {getLocaleString(product.name, lang)}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Removed "View More" link from here as requested */}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  ) : (
+    <EmptyState 
+      message={t('noProjects', lang)}
+      icon="folder"
+    />
+  )}
+
+  <!-- CTA Section (Bottom) -->
+  <section class="py-20 bg-gradient-to-br from-primary to-extra-2 dark:from-extra-2 dark:to-primary text-white">
+    <div class="container text-center">
+      <h2 class="text-4xl md:text-5xl font-bold mb-6">
+        {lang === 'ar' ? 'هل أنت جاهز لتحويل مساحتك؟' : 'Ready to Transform Your Space?'}
+      </h2>
+      <p class="text-lg md:text-xl text-secondary/90 mb-8 max-w-2xl mx-auto">
+        {lang === 'ar' 
+          ? 'دعنا نساعدك في إنشاء بيئة جميلة واستثنائية'
+          : "Let's help you create a beautiful and exceptional environment"
+        }
+      </p>
+      
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <!-- Contact Button (2 of 2) -->
+        <a 
+          href="/contact"
+          class="inline-block px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-secondary hover:text-white hover:shadow-2xl hover:scale-105 transition-all duration-300 min-w-[200px]"
+        >
+          {t('contactUs', lang)}
+        </a>
+
+        <!-- View Portfolio Button -->
+        <a 
+          href="/portfolio"
+          class="inline-block px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-primary hover:shadow-2xl hover:scale-105 transition-all duration-300 min-w-[200px]"
+        >
+          {t('portfolio', lang)}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

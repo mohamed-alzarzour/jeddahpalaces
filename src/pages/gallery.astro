@@ -1,0 +1,329 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FloatingActionButton from '../components/FloatingActionButton';
+import EmptyState from '../components/EmptyState.astro';
+import { sanityClient, urlFor } from '../lib/sanity';
+import { t, getLocaleString } from '../lib/i18n';
+import type { PhotoGallery } from '../lib/types';
+
+const lang = Astro.locals.lang as 'ar' | 'en' || 'ar';
+
+// Fetch photo gallery
+let gallery: PhotoGallery | null = null;
+try {
+  gallery = await sanityClient.fetch(`*[_type == "photoGallery"][0]`);
+} catch (error) {
+  console.error('Failed to fetch photo gallery:', error);
+}
+
+const photos = gallery?.photos || [];
+const PHOTOS_PER_PAGE = 24;
+
+// Extract unique categories for filter
+const categories = [...new Set(photos.map(p => p.category).filter(Boolean))] as string[];
+
+const categoryLabels: Record<string, Record<string, string>> = {
+  interior: { ar: 'داخلي', en: 'Interior' },
+  exterior: { ar: 'خارجي', en: 'Exterior' },
+  'natural-stone': { ar: 'حجر طبيعي', en: 'Natural Stone' },
+  marble: { ar: 'رخام', en: 'Marble' },
+  granite: { ar: 'جرانيت', en: 'Granite' },
+  grc: { ar: 'GRC', en: 'GRC' },
+  other: { ar: 'أخرى', en: 'Other' },
+};
+---
+
+<BaseLayout 
+  title={t('gallery', lang)}
+  description={lang === 'ar' ? 'استعرض معرض صورنا من المشاريع والمنتجات' : 'Browse our photo gallery of projects and products'}
+>
+  <FloatingActionButton client:load mode="simple" lang={lang} />
+
+  <section class="py-20">
+    <div class="container">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+          {getLocaleString(gallery?.title, lang) || t('gallery', lang)}
+        </h1>
+        {gallery?.description && (
+          <p class="text-lg text-extra-2 dark:text-secondary/70 max-w-2xl mx-auto">
+            {getLocaleString(gallery.description, lang)}
+          </p>
+        )}
+      </div>
+
+      {photos.length > 0 ? (
+        <>
+          {/* Category Filters */}
+          {categories.length > 1 && (
+            <div class="flex flex-wrap justify-center gap-3 mb-10" id="gallery-filters">
+              <button
+                data-category="all"
+                class="gallery-filter active px-5 py-2 rounded-full text-sm font-medium border-2 border-secondary bg-secondary text-white transition-all duration-300 hover:scale-105"
+              >
+                {t('allCategories', lang)}
+              </button>
+              {categories.map((cat) => (
+                <button
+                  data-category={cat}
+                  class="gallery-filter px-5 py-2 rounded-full text-sm font-medium border-2 border-secondary/30 text-extra-2 dark:text-secondary/70 hover:border-secondary hover:text-secondary transition-all duration-300 hover:scale-105"
+                >
+                  {categoryLabels[cat]?.[lang] || cat}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Photo Grid */}
+          <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+            {photos.map((photo, i) => (
+              <div 
+                class="gallery-item group relative aspect-square overflow-hidden rounded-lg cursor-zoom-in shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                data-category={photo.category || 'all'}
+                data-index={i}
+                style={i >= PHOTOS_PER_PAGE ? 'display: none;' : ''}
+              >
+                <img
+                  src={urlFor(photo.image).width(400).height(400).fit('crop').quality(80).url()}
+                  alt={getLocaleString(photo.caption, lang) || `Photo ${i + 1}`}
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading={i < 8 ? 'eager' : 'lazy'}
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                  {photo.caption && (
+                    <p class="text-white text-sm font-medium truncate w-full">
+                      {getLocaleString(photo.caption, lang)}
+                    </p>
+                  )}
+                </div>
+                {/* Zoom Icon */}
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <svg class="w-8 h-8 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                  </svg>
+                </div>
+                {/* Full-size image URL stored as data attribute for lightbox */}
+                <input type="hidden" class="full-url" value={urlFor(photo.image).width(1920).quality(90).url()} />
+              </div>
+            ))}
+          </div>
+
+          {/* Photo Count */}
+          <div class="text-center mt-6 text-sm text-extra-2 dark:text-secondary/60">
+            <span id="shown-count">{Math.min(PHOTOS_PER_PAGE, photos.length)}</span> / <span id="total-count">{photos.length}</span>
+            {lang === 'ar' ? ' صورة' : ' photos'}
+          </div>
+
+          {/* Load More Button */}
+          {photos.length > PHOTOS_PER_PAGE && (
+            <div class="text-center mt-8">
+              <button
+                id="load-more-btn"
+                class="px-8 py-3 bg-gradient-to-r from-secondary to-accent text-white font-semibold rounded-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
+              >
+                {t('loadMore', lang)}
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        <EmptyState
+          message={t('noPhotos', lang)}
+          icon="image"
+        />
+      )}
+    </div>
+  </section>
+
+  <!-- Lightbox Overlay -->
+  <div id="lightbox" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm hidden items-center justify-center" role="dialog" aria-modal="true">
+    <button id="lightbox-close" class="absolute top-4 end-4 z-10 text-white/80 hover:text-white p-2 transition-colors" aria-label="Close">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+    <button id="lightbox-prev" class="absolute start-4 top-1/2 -translate-y-1/2 z-10 text-white/80 hover:text-white p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all" aria-label="Previous">
+      <svg class="w-6 h-6 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    <button id="lightbox-next" class="absolute end-4 top-1/2 -translate-y-1/2 z-10 text-white/80 hover:text-white p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all" aria-label="Next">
+      <svg class="w-6 h-6 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+    <img id="lightbox-img" src="" alt="" class="max-h-[90vh] max-w-[90vw] object-contain rounded-lg shadow-2xl transition-opacity duration-300" />
+    <p id="lightbox-caption" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-black/50 px-4 py-2 rounded-full backdrop-blur-sm"></p>
+  </div>
+</BaseLayout>
+
+<script>
+  function initGallery() {
+    const grid = document.getElementById('gallery-grid');
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    const shownCount = document.getElementById('shown-count');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement | null;
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    const lightboxClose = document.getElementById('lightbox-close');
+    const lightboxPrev = document.getElementById('lightbox-prev');
+    const lightboxNext = document.getElementById('lightbox-next');
+    const filterBtns = document.querySelectorAll('.gallery-filter');
+
+    if (!grid) return;
+
+    const allItems = Array.from(grid.querySelectorAll('.gallery-item')) as HTMLElement[];
+    let visibleItems: HTMLElement[] = [];
+    let currentFilter = 'all';
+    let shownItems = 24;
+    let currentLightboxIndex = -1;
+
+    // --- Filtering ---
+    function applyFilter(category: string) {
+      currentFilter = category;
+      shownItems = 24;
+
+      allItems.forEach(item => {
+        const itemCat = item.dataset.category;
+        const matchesFilter = category === 'all' || itemCat === category;
+        item.style.display = matchesFilter ? '' : 'none';
+      });
+
+      // Apply pagination to filtered items
+      visibleItems = allItems.filter(item => item.style.display !== 'none' || 
+        (category === 'all' || item.dataset.category === category));
+      
+      visibleItems = allItems.filter(item => {
+        const itemCat = item.dataset.category;
+        return category === 'all' || itemCat === category;
+      });
+
+      visibleItems.forEach((item, i) => {
+        item.style.display = i < shownItems ? '' : 'none';
+      });
+
+      updateCount();
+      updateLoadMoreBtn();
+
+      // Update filter button styles
+      filterBtns.forEach(btn => {
+        const btnCat = (btn as HTMLElement).dataset.category;
+        if (btnCat === category) {
+          btn.classList.add('bg-secondary', 'text-white', 'border-secondary');
+          btn.classList.remove('border-secondary/30', 'text-extra-2', 'dark:text-secondary/70');
+        } else {
+          btn.classList.remove('bg-secondary', 'text-white', 'border-secondary');
+          btn.classList.add('border-secondary/30', 'text-extra-2', 'dark:text-secondary/70');
+        }
+      });
+    }
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const category = (btn as HTMLElement).dataset.category || 'all';
+        applyFilter(category);
+      });
+    });
+
+    // --- Load More ---
+    function updateCount() {
+      if (!shownCount) return;
+      const shown = visibleItems.filter(item => item.style.display !== 'none').length;
+      shownCount.textContent = String(shown);
+    }
+
+    function updateLoadMoreBtn() {
+      if (!loadMoreBtn) return;
+      const hiddenCount = visibleItems.filter(item => item.style.display === 'none').length;
+      loadMoreBtn.style.display = hiddenCount > 0 ? '' : 'none';
+    }
+
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener('click', () => {
+        shownItems += 24;
+        visibleItems.forEach((item, i) => {
+          if (i < shownItems) item.style.display = '';
+        });
+        updateCount();
+        updateLoadMoreBtn();
+      });
+    }
+
+    // --- Lightbox ---
+    function getVisibleShownItems(): HTMLElement[] {
+      return visibleItems.filter(item => item.style.display !== 'none');
+    }
+
+    function openLightbox(index: number) {
+      const items = getVisibleShownItems();
+      if (index < 0 || index >= items.length || !lightbox || !lightboxImg) return;
+      
+      currentLightboxIndex = index;
+      const item = items[index];
+      const fullUrl = item.querySelector('.full-url') as HTMLInputElement;
+      const alt = item.querySelector('img')?.alt || '';
+      const caption = item.querySelector('p')?.textContent || '';
+
+      lightboxImg.src = fullUrl?.value || '';
+      lightboxImg.alt = alt;
+      if (lightboxCaption) {
+        lightboxCaption.textContent = caption;
+        lightboxCaption.style.display = caption ? '' : 'none';
+      }
+
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      if (!lightbox) return;
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+      document.body.style.overflow = '';
+      currentLightboxIndex = -1;
+    }
+
+    function navigateLightbox(direction: number) {
+      const items = getVisibleShownItems();
+      const newIndex = currentLightboxIndex + direction;
+      if (newIndex >= 0 && newIndex < items.length) {
+        openLightbox(newIndex);
+      }
+    }
+
+    // Click on photo to open lightbox
+    allItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const items = getVisibleShownItems();
+        const index = items.indexOf(item);
+        if (index >= 0) openLightbox(index);
+      });
+    });
+
+    lightboxClose?.addEventListener('click', closeLightbox);
+    lightboxPrev?.addEventListener('click', () => navigateLightbox(-1));
+    lightboxNext?.addEventListener('click', () => navigateLightbox(1));
+
+    // Close on background click
+    lightbox?.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox || lightbox.classList.contains('hidden')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') navigateLightbox(document.documentElement.dir === 'rtl' ? 1 : -1);
+      if (e.key === 'ArrowRight') navigateLightbox(document.documentElement.dir === 'rtl' ? -1 : 1);
+    });
+
+    // Initialize
+    visibleItems = [...allItems];
+    updateLoadMoreBtn();
+  }
+
+  // Run on initial load and on Astro page transitions
+  document.addEventListener('DOMContentLoaded', initGallery);
+  document.addEventListener('astro:page-load', initGallery);
+</script>

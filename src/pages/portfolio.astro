@@ -1,0 +1,180 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BeforeAfterSlider from '../components/BeforeAfterSlider';
+import FloatingActionButton from '../components/FloatingActionButton';
+import EmptyState from '../components/EmptyState.astro';
+import { sanityClient, urlFor } from '../lib/sanity';
+import { getLanguage, t, getLocaleString } from '../lib/i18n';
+import type { Project } from '../lib/types';
+
+const lang = Astro.locals.lang as 'ar' | 'en' || 'ar';
+
+// Fetch all projects
+let projects: Project[] = [];
+try {
+  projects = await sanityClient.fetch(`
+    *[_type == "project"] | order(_createdAt desc) {
+      _id,
+      title,
+      slug,
+      beforeImage,
+      afterImage,
+      description,
+      category,
+      year,
+      relatedProducts[]->{
+        _id,
+        name,
+        slug
+      }
+    }
+  `);
+} catch (error) {
+  console.error('Failed to fetch projects:', error);
+}
+
+---
+
+<BaseLayout 
+  title={t('portfolio', lang)}
+  description={lang === 'ar' ? 'استكشف معرض أعمالنا ومشاريعنا المنجزة' : 'Explore our portfolio of completed projects'}
+>
+  <FloatingActionButton client:load mode="full" scrollTargets={projects.map((_, i) => `project-${i}`)} lang={lang} />
+  {projects.length > 0 ? (
+    <section class="py-20">
+      <div class="container">
+        <div class="text-center mb-16">
+          <h1 class="text-4xl md:text-5xl font-bold mb-4">
+            {t('portfolio', lang)}
+          </h1>
+          <p class="text-lg text-extra-2 dark:text-secondary/70 max-w-2xl mx-auto">
+            {lang === 'ar'
+              ? 'شاهد مجموعة من أفضل أعمالنا في التصميم الداخلي والخارجي'
+              : 'View a collection of our best interior and exterior design work'
+            }
+          </p>
+        </div>
+
+        <div class="space-y-32">
+          {projects.map((project, index) => (
+            <div key={project._id} id={`project-${index}`} class="scroll-snap-section scroll-mt-24">
+              <div class="grid lg:grid-cols-4 gap-8">
+                <!-- Before/After Slider (3/4 width on desktop) -->
+                <div class={`lg:col-span-3 order-2 ${index % 2 === 0 ? 'lg:order-1' : 'lg:order-2'}`}>
+                  <div class="aspect-video lg:aspect-[16/10] w-full">
+                    {project.afterImage ? (
+                      <BeforeAfterSlider 
+                        client:visible
+                        beforeImage={urlFor(project.beforeImage).width(1200).quality(90).url()}
+                        afterImage={urlFor(project.afterImage).width(1200).quality(90).url()}
+                        beforeAlt={lang === 'ar' ? 'قبل' : 'Before'}
+                        afterAlt={lang === 'ar' ? 'بعد' : 'After'}
+                      />
+                    ) : (
+                      <img
+                        src={urlFor(project.beforeImage).width(1200).quality(90).url()}
+                        alt={getLocaleString(project.title, lang)}
+                        class="w-full h-full object-cover rounded-lg"
+                        loading="lazy"
+                      />
+                    )}
+                  </div>
+                </div>
+
+                <!-- Project Info (1/4 width on desktop) -->
+                <div class={`lg:col-span-1 order-1 ${index % 2 === 0 ? 'lg:order-2' : 'lg:order-1'} space-y-6`}>
+                  <div>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-3">
+                      {getLocaleString(project.title, lang)}
+                    </h2>
+                    
+                    {/* Category & Year */}
+                    <div class="flex flex-wrap gap-2 mb-3">
+                      {project.category && (
+                        <span class="inline-block px-3 py-1 bg-accent/20 text-accent text-sm font-medium rounded-full">
+                          {project.category}
+                        </span>
+                      )}
+                      {project.year && (
+                        <span class="inline-block px-3 py-1 bg-secondary/20 text-secondary text-sm font-medium rounded-full">
+                          {project.year}
+                        </span>
+                      )}
+                    </div>
+
+                    {project.description && (
+                      <p class="text-extra-2 dark:text-secondary/70 leading-relaxed mb-6">
+                        {getLocaleString(project.description, lang)}
+                      </p>
+                    )}
+
+                    <a 
+                      href={`/project/${project.slug.current}`}
+                      class="inline-flex items-center gap-2 text-secondary font-bold hover:text-accent transition-colors group mb-6"
+                    >
+                      <span>{lang === 'ar' ? 'المزيد عن المشروع' : 'More about the project'}</span>
+                      <svg class="w-4 h-4 transform rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </a>
+                  </div>
+
+                  {/* Materials Used */}
+                  {project.relatedProducts && project.relatedProducts.length > 0 && (
+                    <div>
+                      <h3 class="font-semibold mb-3 text-lg">
+                        {t('materialsUsed', lang)}
+                      </h3>
+                      <div class="flex flex-wrap gap-2">
+                        {project.relatedProducts.map((product) => (
+                          <a
+                            href={`/products/${product.slug.current}`}
+                            class="inline-block px-3 py-1.5 bg-secondary/10 hover:bg-secondary hover:text-white rounded-full text-sm font-medium transition-all duration-300"
+                          >
+                            {getLocaleString(product.name, lang)}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section class="py-20">
+      <div class="container">
+        <EmptyState 
+          message={t('noProjects', lang)}
+          icon="folder"
+        />
+      </div>
+    </section>
+  )}
+
+  <!-- CTA Section -->
+  <section class="py-20 bg-gradient-to-br from-primary to-extra-2 dark:from-extra-2 dark:to-primary text-white">
+    <div class="container text-center">
+      <h2 class="text-4xl md:text-5xl font-bold mb-6">
+        {lang === 'ar' ? 'مشروعك القادم يبدأ هنا' : 'Your Next Project Starts Here'}
+      </h2>
+      <p class="text-lg md:text-xl text-secondary/90 mb-8 max-w-2xl mx-auto">
+        {lang === 'ar' 
+          ? 'دعنا نحول رؤيتك إلى واقع مذهل'
+          : "Let's turn your vision into stunning reality"
+        }
+      </p>
+      <a 
+        href="/contact"
+        class="inline-block px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-secondary hover:text-white hover:shadow-2xl hover:scale-105 transition-all duration-300"
+      >
+        {t('contactUs', lang)}
+      </a>
+    </div>
+  </section>
+</BaseLayout>

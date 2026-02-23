@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FloatingActionButton from '../components/FloatingActionButton';
+import EmptyState from '../components/EmptyState.astro';
+import { sanityClient, urlFor } from '../lib/sanity';
+import { getLanguage, t, getLocaleString } from '../lib/i18n';
+import type { Service } from '../lib/types';
+
+const lang = Astro.locals.lang as 'ar' | 'en' || 'ar';
+
+// Fetch all services
+let services: Service[] = [];
+try {
+  services = await sanityClient.fetch(`
+    *[_type == "service"] | order(order asc)
+  `);
+} catch (error) {
+  console.error('Failed to fetch services:', error);
+}
+---
+
+<BaseLayout 
+  title={t('services', lang)}
+  description={lang === 'ar' ? 'خدماتنا المتكاملة في التصميم والتوريد والإشراف' : 'Our complete services in design, supply, and supervision'}
+>
+  <FloatingActionButton client:load mode="simple" lang={lang} />
+  <section class="py-20">
+    <div class="container">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+          {t('services', lang)}
+        </h1>
+        <p class="text-lg text-extra-2 dark:text-secondary/70 max-w-2xl mx-auto">
+          {lang === 'ar'
+            ? 'نقدم مجموعة شاملة من الخدمات لتحويل مساحتك إلى تحفة فنية'
+            : 'We offer a comprehensive range of services to transform your space into a masterpiece'
+          }
+        </p>
+      </div>
+
+      {services.length > 0 ? (
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {services.map((service) => (
+            <div class="group bg-white dark:bg-primary/30 rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+              {/* Icon */}
+              {service.icon && (
+                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-secondary to-accent p-1">
+                  <div class="w-full h-full rounded-full bg-white dark:bg-primary flex items-center justify-center overflow-hidden">
+                    <img 
+                      src={urlFor(service.icon).width(80).height(80).url()}
+                      alt={getLocaleString(service.title, lang)}
+                      class="w-12 h-12 object-contain"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Title */}
+              <h2 class="text-2xl font-bold mb-4 text-center group-hover:text-secondary transition-colors">
+                {getLocaleString(service.title, lang)}
+              </h2>
+
+              {/* Description */}
+              {service.description && (
+                <p class="text-extra-2 dark:text-secondary/70 leading-relaxed text-center">
+                  {getLocaleString(service.description, lang)}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <EmptyState
+          message={lang === 'ar' ? 'لا توجد خدمات متاحة حالياً' : 'No services available'}
+          icon="folder"
+        />
+      )}
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 bg-extra-1 dark:bg-primary/20">
+    <div class="container text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">
+        {lang === 'ar' ? 'مهتم بخدماتنا؟' : 'Interested in Our Services?'}
+      </h2>
+      <p class="text-lg text-extra-2 dark:text-secondary/70 mb-8 max-w-2xl mx-auto">
+        {lang === 'ar'
+          ? 'تواصل معنا اليوم ودعنا نناقش كيف يمكننا مساعدتك في تحقيق رؤيتك'
+          : "Contact us today and let's discuss how we can help you achieve your vision"
+        }
+      </p>
+      <a 
+        href="/contact"
+        class="inline-block px-8 py-4 bg-gradient-to-r from-secondary to-accent text-white font-semibold rounded-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
+      >
+        {t('contactUs', lang)}
+      </a>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,167 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+}
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+import { getLanguage, getDirection } from '../lib/i18n';
+
+import { ClientRouter } from 'astro:transitions';
+import PageLoader from '../components/PageLoader.astro';
+
+const { title, description, image } = Astro.props;
+const lang = Astro.locals.lang as 'ar' | 'en' || 'ar';
+const dir = getDirection(lang);
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const siteName = 'Jeddah Palaces for Natural Stone';
+const defaultDescription = lang === 'ar' 
+  ? 'شركة متخصصة في تصميم وتوريد الديكورات الداخلية والخارجية والحجر الطبيعي'
+  : 'Specialized in interior and exterior design, natural stone supply and finishing projects';
+const metaDescription = description || defaultDescription;
+const ogImage = image || '/logo.png';
+---
+
+<!doctype html>
+<html lang={lang} dir={dir} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <ClientRouter />
+
+    <!-- Primary Meta Tags -->
+    <title>{title} | {siteName}</title>
+    <meta name="title" content={`${title} | ${siteName}`} />
+    <meta name="description" content={metaDescription} />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Alternate Language Links -->
+    <link rel="alternate" hreflang="ar" href={`${Astro.site}${Astro.url.pathname}`} />
+    <link rel="alternate" hreflang="en" href={`${Astro.site}${Astro.url.pathname}`} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={`${title} | ${siteName}`} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+    <meta property="og:site_name" content={siteName} />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={`${title} | ${siteName}`} />
+    <meta property="twitter:description" content={metaDescription} />
+    <meta property="twitter:image" content={new URL(ogImage, Astro.site)} />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    
+    <!-- Preconnect to Sanity CDN -->
+    <link rel="preconnect" href="https://cdn.sanity.io" />
+    
+    <!-- Dark Mode Script (runs before page render to prevent flash) -->
+    <script is:inline>
+      const setDarkMode = () => {
+        const darkMode = localStorage.getItem('jpns_dark_mode');
+        if (darkMode === 'true') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      };
+      
+      // Scroll Reveal Logic
+      const setupScrollReveal = () => {
+        const observerOptions = {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target); // Only animate once
+            }
+          });
+        }, observerOptions);
+
+        // Target elements to animate
+        const elements = document.querySelectorAll('h1, h2, h3, p, img, .card, .project-card, .service-card');
+        
+        elements.forEach((el, index) => {
+          // Don't animate if already visible or inside header/footer to avoid layout shifts
+          if (!el.closest('header') && !el.closest('footer') && !el.classList.contains('no-reveal')) {
+             el.classList.add('reveal-on-scroll');
+             // Add slight stagger based on index (optional, but nice)
+             // el.style.transitionDelay = `${(index % 5) * 0.1}s`; 
+             observer.observe(el);
+          }
+        });
+      };
+
+      // Run on initial load
+      setDarkMode();
+      // Wait for DOM content to be ready for animations
+      document.addEventListener('DOMContentLoaded', setupScrollReveal);
+      
+      // Run on view transition swap
+      document.addEventListener('astro:after-swap', setDarkMode);
+      document.addEventListener('astro:page-load', setupScrollReveal);
+    </script>
+  </head>
+  <body>
+    <PageLoader />
+    <!-- Skip to main content for accessibility -->
+    <a 
+      href="#main-content" 
+      class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-secondary focus:text-white"
+    >
+      {lang === 'ar' ? 'تخطى إلى المحتوى الرئيسي' : 'Skip to main content'}
+    </a>
+    
+    <Header />
+    
+    <main id="main-content">
+      <slot />
+    </main>
+    
+    <Footer />
+  </body>
+</html>
+
+<style is:global>
+  /* Screen reader only utility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  
+  .focus\:not-sr-only:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 1rem;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+</style>

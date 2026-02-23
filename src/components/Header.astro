@@ -1,0 +1,100 @@
+---
+import LanguageToggle from './LanguageToggle';
+import DarkModeToggle from './DarkModeToggle';
+import MobileMenu from './MobileMenu';
+import { getLanguage, t } from '../lib/i18n';
+
+const lang = Astro.locals.lang as 'ar' | 'en' || 'ar';
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+  { href: '/', label: t('home', lang) },
+  { href: '/products', label: t('products', lang) },
+  { href: '/portfolio', label: t('portfolio', lang) },
+  { href: '/gallery', label: t('gallery', lang) },
+  { href: '/services', label: t('services', lang) },
+  { href: '/about', label: t('about', lang) },
+  { href: '/contact', label: t('contact', lang) },
+];
+---
+
+<header id="main-header" class="absolute lg:fixed top-0 left-0 right-0 z-40 bg-extra-1/90 dark:bg-primary/90 backdrop-blur-md border-b border-secondary/10 transition-transform duration-300">
+  <div class="container">
+    <div class="flex items-center justify-between h-20">
+      <!-- Logo -->
+      <a href="/" class="header-logo flex items-center gap-3 group">
+        <img 
+          src="/logo.png" 
+          alt="Jeddah Palaces Logo" 
+          class="w-16 h-16 object-contain group-hover:scale-110 transition-transform duration-300"
+        />
+        <div class="flex flex-col">
+          <span class="font-bold text-lg leading-tight">Jeddah Palaces</span>
+          <span class="text-xs text-extra-2 dark:text-secondary/70">{lang === 'ar' ? 'للحجر الطبيعي' : 'Natural Stone'}</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden lg:flex items-center gap-8">
+        {navItems.map((item) => (
+          <a
+            href={item.href}
+            class={`font-medium transition-colors hover:text-secondary relative group ${
+              currentPath === item.href ? 'text-secondary' : ''
+            }`}
+          >
+            {item.label}
+            <span class={`absolute -bottom-1 left-0 h-0.5 bg-secondary transition-all duration-300 ${
+              currentPath === item.href ? 'w-full' : 'w-0 group-hover:w-full'
+            }`}></span>
+          </a>
+        ))}
+      </nav>
+
+      <!-- Right Section: Language & Dark Mode Toggles + Mobile Menu -->
+      <div class="header-controls flex items-center gap-3">
+        <div class="toggle-wrapper">
+          <LanguageToggle client:load />
+        </div>
+        <div class="toggle-wrapper">
+          <DarkModeToggle client:load />
+        </div>
+        <MobileMenu client:load />
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  let lastScrollY = window.scrollY;
+  const header = document.getElementById('main-header');
+
+  const handleScroll = () => {
+    if (!header) return;
+    
+    const currentScrollY = window.scrollY;
+    const isMobile = window.innerWidth < 1024; // lg breakpoint
+    
+    // Desktop behavior only: Show on scroll up, hide on scroll down
+    if (!isMobile) {
+      if (currentScrollY < lastScrollY || currentScrollY < 50) {
+        header.style.transform = 'translateY(0)';
+      } else if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        header.style.transform = 'translateY(-100%)';
+      }
+    } 
+    // Mobile behavior: Static (absolute), so no JS transform needed.
+    // Ensure transform is reset if resizing from desktop
+    else {
+      header.style.transform = 'none';
+    }
+    
+    lastScrollY = currentScrollY;
+  };
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('resize', handleScroll, { passive: true });
+</script>
+
+<!-- Spacer to prevent content from hiding under fixed header -->
+<div class="h-20"></div>

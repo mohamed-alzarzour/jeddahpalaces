@@ -1,0 +1,160 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BeforeAfterSlider from '../../components/BeforeAfterSlider';
+import FloatingActionButton from '../../components/FloatingActionButton';
+import ImageGallery from '../../components/ImageGallery';
+import { sanityClient, urlFor } from '../../lib/sanity';
+import { getLocaleString, t } from '../../lib/i18n';
+import type { Project } from '../../lib/types';
+
+export const prerender = false; // Ensure SSR
+
+const { slug } = Astro.params;
+const lang = Astro.locals.lang as 'ar' | 'en' || 'ar';
+
+if (!slug) {
+  return Astro.redirect('/404');
+}
+
+// Fetch project
+const project: Project = await sanityClient.fetch(`
+  *[_type == "project" && slug.current == $slug][0]{
+    ...,
+    relatedProducts[]->{
+      _id,
+      name,
+      slug
+    }
+  }
+`, { slug });
+
+if (!project) {
+  return Astro.redirect('/404');
+}
+
+const title = getLocaleString(project.title, lang);
+---
+
+<BaseLayout 
+  title={title}
+  description={getLocaleString(project.description, lang)}
+  image={project.afterImage ? urlFor(project.afterImage).width(1200).url() : undefined}
+>
+  <FloatingActionButton client:load mode="simple" lang={lang} />
+
+  <!-- 1. Project Name -->
+  <section class="pt-32 pb-10 bg-extra-1 dark:bg-primary text-center">
+    <div class="container">
+      <h1 class="text-4xl md:text-6xl font-bold text-primary dark:text-white mb-4">
+        {title}
+      </h1>
+      <div class="flex items-center justify-center gap-4 text-sm md:text-base text-secondary">
+        {project.category && (
+          <span class="px-3 py-1 bg-secondary/10 rounded-full">
+            {project.category}
+          </span>
+        )}
+        {project.year && (
+          <span class="px-3 py-1 bg-secondary/10 rounded-full">
+            {project.year}
+          </span>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Before & After Slider (Full Screen/Large Hero) -->
+  <section class="w-full h-[60vh] md:h-[80vh] relative bg-black">
+    {project.afterImage ? (
+      <BeforeAfterSlider 
+        client:visible
+        beforeImage={urlFor(project.beforeImage).width(1920).quality(90).url()}
+        afterImage={urlFor(project.afterImage).width(1920).quality(90).url()}
+        beforeAlt={lang === 'ar' ? 'قبل' : 'Before'}
+        afterAlt={lang === 'ar' ? 'بعد' : 'After'}
+      />
+    ) : (
+      <img
+        src={urlFor(project.beforeImage).width(1920).quality(90).url()}
+        alt={getLocaleString(project.title, lang)}
+        class="w-full h-full object-cover"
+      />
+    )}
+  </section>
+
+  <!-- 3. Project Info -->
+  <section class="py-20 bg-white dark:bg-primary/50">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold mb-8 text-center">
+          {lang === 'ar' ? 'تفاصيل المشروع' : 'Project Details'}
+        </h2>
+        
+        {project.description && (
+          <div class="prose dark:prose-invert max-w-none mb-12 text-lg leading-relaxed text-center">
+            <p>{getLocaleString(project.description, lang)}</p>
+          </div>
+        )}
+
+        {/* Materials Used */}
+        {project.relatedProducts && project.relatedProducts.length > 0 && (
+          <div class="bg-extra-1 dark:bg-primary p-8 rounded-2xl border border-secondary/10">
+            <h3 class="text-xl font-bold mb-6 text-center">
+              {t('materialsUsed', lang)}
+            </h3>
+            <div class="flex flex-wrap justify-center gap-4">
+              {project.relatedProducts.map((product) => (
+                <a
+                  href={`/products/${product.slug.current}`}
+                  class="flex items-center gap-2 px-6 py-3 bg-white dark:bg-primary/50 rounded-lg shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 border border-secondary/20"
+                >
+                  <span class="font-medium">
+                    {getLocaleString(product.name, lang)}
+                  </span>
+                  <svg class="w-4 h-4 text-secondary rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Project Gallery (Development Phases) -->
+  {project.gallery && project.gallery.length > 0 && (
+    <section class="py-20 bg-extra-1/30 dark:bg-black/20">
+      <div class="container">
+        <h2 class="text-3xl font-bold mb-12 text-center">
+          {lang === 'ar' ? 'مراحل العمل' : 'Development Phases'}
+        </h2>
+        
+        <ImageGallery client:load images={project.gallery} title={title} />
+      </div>
+    </section>
+  )}
+
+  <!-- 5. Navigation Buttons -->
+  <section class="py-20">
+    <div class="container">
+      <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+        <a 
+          href="/contact"
+          class="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-secondary to-accent text-white font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 text-center"
+        >
+          {t('contactUs', lang)}
+        </a>
+        
+        <a 
+          href="/portfolio"
+          class="w-full md:w-auto px-8 py-4 bg-white dark:bg-primary border-2 border-secondary text-secondary font-bold rounded-lg hover:bg-secondary hover:text-white transition-all duration-300 text-center"
+        >
+          {lang === 'ar' ? 'العودة للمعرض' : 'Back to Portfolio'}
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

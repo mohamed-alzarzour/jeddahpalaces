@@ -1,0 +1,31 @@
+---
+---
+<div id="page-loader" class="fixed inset-0 z-[100] bg-white dark:bg-[#1a1a1a] flex items-center justify-center transition-opacity duration-300 pointer-events-none opacity-0" aria-hidden="true">
+  <div class="relative w-20 h-20">
+    <div class="absolute inset-0 border-4 border-secondary/20 rounded-full"></div>
+    <div class="absolute inset-0 border-4 border-secondary rounded-full border-t-transparent animate-spin"></div>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const loader = document.getElementById('page-loader');
+  
+  // Show loader on navigation start
+  document.addEventListener('astro:before-preparation', () => {
+    if (loader) {
+      loader.classList.remove('opacity-0', 'pointer-events-none');
+      loader.setAttribute('aria-hidden', 'false');
+    }
+  });
+
+  // Hide loader when page is ready
+  document.addEventListener('astro:page-load', () => {
+    if (loader) {
+      loader.classList.add('opacity-0', 'pointer-events-none');
+      loader.setAttribute('aria-hidden', 'true');
+    }
+  });
+</script>
