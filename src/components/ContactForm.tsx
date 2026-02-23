@@ -54,7 +54,7 @@ export default function ContactForm() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    access_key: 'YOUR_WEB3FORMS_ACCESS_KEY', // User needs to add this
+                    access_key: '7068255c-98ed-4ce9-8e10-2736bc049eb5',
                     name: formData.name,
                     email: formData.email,
                     phone: formData.phone,
