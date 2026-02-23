@@ -1,8 +1,7 @@
 import React, { useRef, useEffect, type ReactNode } from 'react';
 import gsap from 'gsap';
-// @ts-ignore - CJS/ESM interop for Vercel serverless
-import ScrollTriggerPkg from 'gsap/dist/ScrollTrigger';
-const ScrollTrigger = (ScrollTriggerPkg as any).default ?? ScrollTriggerPkg;
+import ScrollTriggerPlugin from 'gsap/dist/ScrollTrigger';
+const ScrollTrigger = ScrollTriggerPlugin;
 
 // Register ScrollTrigger
 interface Props {
