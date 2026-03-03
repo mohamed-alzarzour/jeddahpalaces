@@ -92,7 +92,7 @@ export const translations: Record<Language, Record<string, string>> = {
         products: 'Products',
         portfolio: 'Portfolio',
         services: 'Services',
-        about: 'About',
+        about: 'About Us',
         contact: 'Contact',
         contactUs: 'Contact Us',
         scrollDown: 'Scroll Down',
