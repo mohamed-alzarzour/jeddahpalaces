@@ -57,13 +57,12 @@ export default function ContactForm() {
                 },
                 body: JSON.stringify({
                     access_key: '7068255c-98ed-4ce9-8e10-2736bc049eb5',
-                    subject: `New message from ${formData.name} - Jeddah Palaces`,
+                    name: formData.name,
+                    email: formData.email,
+                    phone: formData.phone,
+                    message: formData.message,
                     from_name: 'Jeddah Palaces Website',
                     to_email: 'mhamd200211@gmail.com',
-                    name: formData.name,
-                    email: formData.email || 'Not provided',
-                    phone: formData.phone,
-                    message: `Phone: ${formData.phone}\n${formData.email ? `Email: ${formData.email}\n` : ''}\n${formData.message}`,
                 }),
             });
 
