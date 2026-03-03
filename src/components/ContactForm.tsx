@@ -20,10 +20,12 @@ export default function ContactForm() {
             newErrors.name = t('required', lang);
         }
 
-        if (!formData.email.trim()) {
-            newErrors.email = t('required', lang);
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        if (formData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
             newErrors.email = t('invalidEmail', lang);
+        }
+
+        if (!formData.phone.trim()) {
+            newErrors.phone = t('required', lang);
         }
 
         if (!formData.message.trim()) {
@@ -128,7 +130,7 @@ export default function ContactForm() {
                 {/* Email Field */}
                 <div className="group">
                     <label htmlFor="email" className="block text-sm font-medium mb-2">
-                        {t('email', lang)} <span className="text-red-500">*</span>
+                        {t('email', lang)}
                     </label>
                     <input
                         type="email"
@@ -152,7 +154,7 @@ export default function ContactForm() {
                 {/* Phone Field */}
                 <div className="group">
                     <label htmlFor="phone" className="block text-sm font-medium mb-2">
-                        {t('phone', lang)}
+                        {t('phone', lang)} <span className="text-red-500">*</span>
                     </label>
                     <input
                         type="tel"
@@ -160,8 +162,17 @@ export default function ContactForm() {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-lg bg-white dark:bg-primary/30 border-2 border-secondary/20 focus:border-secondary transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-secondary/20"
+                        className={`w-full px-4 py-3 rounded-lg bg-white dark:bg-primary/30 border-2 transition-all duration-300 
+              ${errors.phone ? 'border-red-500' : 'border-secondary/20 focus:border-secondary'} 
+              focus:outline-none focus:ring-2 focus:ring-secondary/20`}
+                        aria-invalid={!!errors.phone}
+                        aria-describedby={errors.phone ? 'phone-error' : undefined}
                     />
+                    {errors.phone && (
+                        <p id="phone-error" className="text-red-500 text-sm mt-1" role="alert">
+                            {errors.phone}
+                        </p>
+                    )}
                 </div>
 
                 {/* Message Field */}
