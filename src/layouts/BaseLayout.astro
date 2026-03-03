@@ -3,6 +3,7 @@ interface Props {
   title: string;
   description?: string;
   image?: string;
+  preloadImage?: string;
 }
 
 import Header from '../components/Header.astro';
@@ -13,7 +14,7 @@ import { getLanguage, getDirection } from '../lib/i18n';
 import { ClientRouter } from 'astro:transitions';
 import PageLoader from '../components/PageLoader.astro';
 
-const { title, description, image } = Astro.props;
+const { title, description, image, preloadImage } = Astro.props;
 const lang = Astro.locals.lang as 'ar' | 'en' || 'ar';
 const dir = getDirection(lang);
 
@@ -64,6 +65,10 @@ const ogImage = image || '/logo.png';
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png" />
+    
+    {preloadImage && (
+      <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />
+    )}
     
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />

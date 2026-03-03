@@ -48,18 +48,19 @@ try {
 const heroTitle = getLocaleString(homepageSettings?.heroTitle, lang);
 const heroDescription = getLocaleString(homepageSettings?.heroDescription, lang);
 const heroImage = homepageSettings?.heroImage;
+const heroImageUrl = heroImage ? urlFor(heroImage).width(400).url() : undefined;
 const featuredProjects = homepageSettings?.featuredProjects || [];
 ---
 
 
-<BaseLayout title={t('home', lang)}>
+<BaseLayout title={t('home', lang)} preloadImage={heroImageUrl}>
   <!-- Hero Section -->
   <section class="relative min-h-[85vh] flex items-center bg-gradient-to-br from-extra-1 via-white to-secondary/10 dark:from-primary dark:via-primary/90 dark:to-accent/20 overflow-hidden">
     <div class="container">
       <div class="grid lg:grid-cols-2 gap-12 items-center py-20">
         <!-- Left: Text Content (PC) / Bottom (Mobile) -->
         <div class="space-y-8 animate-slide-in-left order-2 lg:order-1">
-          <ScrollFloat client:load float={50} className="no-reveal">
+          <ScrollFloat client:idle float={50} className="no-reveal">
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               {heroTitle || (
                 <span>
@@ -72,7 +73,7 @@ const featuredProjects = homepageSettings?.featuredProjects || [];
             </h1>
           </ScrollFloat>
           
-          <ScrollFloat client:load float={30} className="no-reveal">
+          <ScrollFloat client:idle float={30} className="no-reveal">
             <p class="text-lg md:text-xl text-extra-2 dark:text-secondary/80 leading-relaxed max-w-xl">
               {heroDescription || (lang === 'ar' 
                 ? 'نحول أحلامك إلى واقع من خلال تصميم وتوريد أفخم الديكورات والحجر الطبيعي'
@@ -133,7 +134,7 @@ const featuredProjects = homepageSettings?.featuredProjects || [];
       </div>
     </div>
     
-    <FloatingActionButton client:load mode="full" scrollTargets={featuredProjects.map((_, i) => `project-${i}`)} lang={lang} />
+    <FloatingActionButton client:idle mode="full" scrollTargets={featuredProjects.map((_, i) => `project-${i}`)} lang={lang} />
   </section>
 
   <!-- Featured Projects Section -->
@@ -162,17 +163,19 @@ const featuredProjects = homepageSettings?.featuredProjects || [];
                     {project.beforeImage && project.afterImage ? (
                       <BeforeAfterSlider 
                         client:visible
-                        beforeImage={urlFor(project.beforeImage).width(1200).quality(90).url()}
-                        afterImage={urlFor(project.afterImage).width(1200).quality(90).url()}
+                        beforeImage={urlFor(project.beforeImage).width(600).quality(75).url()}
+                        afterImage={urlFor(project.afterImage).width(600).quality(75).url()}
                         beforeAlt={lang === 'ar' ? 'قبل' : 'Before'}
                         afterAlt={lang === 'ar' ? 'بعد' : 'After'}
                       />
                     ) : (project.afterImage || project.beforeImage) ? (
                       <img
-                        src={urlFor(project.afterImage || project.beforeImage!).width(1200).quality(90).url()}
+                        src={urlFor(project.afterImage || project.beforeImage!).width(600).quality(75).url()}
                         alt={getLocaleString(project.title, lang)}
                         class="w-full h-full object-cover rounded-lg"
                         loading="lazy"
+                        width="600"
+                        height="375"
                       />
                     ) : null}
                   </div>
