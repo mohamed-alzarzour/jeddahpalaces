@@ -111,7 +111,9 @@ const featuredProjects = homepageSettings?.featuredProjects || [];
           {heroImage ? (
             <div class="relative z-10">
               <img 
-                src={urlFor(heroImage).width(800).url()}
+                src={urlFor(heroImage).width(400).url()}
+                srcset={`${urlFor(heroImage).width(400).url()} 400w, ${urlFor(heroImage).width(800).url()} 800w`}
+                sizes="(max-width: 768px) 400px, 800px"
                 alt={heroTitle || 'Jeddah Palaces'}
                 class="w-full h-auto max-h-[600px] object-contain drop-shadow-2xl"
                 loading="eager"
