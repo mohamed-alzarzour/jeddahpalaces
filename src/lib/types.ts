@@ -64,7 +64,6 @@ export interface Project {
     beforeImage?: SanityImage;
     afterImage?: SanityImage;
     progressPhotos?: ProgressPhoto[];
-    gallery?: SanityImage[];
     description?: LocaleText;
     location?: LocaleString;
     startDate?: string;
