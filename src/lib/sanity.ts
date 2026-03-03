@@ -12,5 +12,5 @@ export const sanityClient = createClient({
 const builder = imageUrlBuilder(sanityClient);
 
 export function urlFor(source: SanityImageSource) {
-    return builder.image(source);
+    return builder.image(source).auto('format');
 }

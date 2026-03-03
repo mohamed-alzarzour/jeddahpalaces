@@ -1,9 +1,5 @@
 import React, { useRef, useEffect, type ReactNode } from 'react';
-import gsap from 'gsap';
-import ScrollTriggerPlugin from 'gsap/dist/ScrollTrigger';
-const ScrollTrigger = ScrollTriggerPlugin;
 
-// Register ScrollTrigger
 interface Props {
     children: ReactNode;
     className?: string;
@@ -14,32 +10,38 @@ export default function ScrollFloat({ children, className = '', float = 50 }: Pr
     const elementRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // Register ScrollTrigger only on client side
-        gsap.registerPlugin(ScrollTrigger);
-
         const element = elementRef.current;
         if (!element) return;
 
-        // Create the animation
-        const anim = gsap.to(element, {
-            y: -float, // Move up by 'float' amount
-            ease: 'none',
-            scrollTrigger: {
-                trigger: element,
-                start: 'top bottom', // Start when top of element hits bottom of viewport
-                end: 'bottom top',   // End when bottom of element hits top of viewport
-                scrub: true,         // Link animation progress to scroll position
-            },
-        });
+        let ticking = false;
 
-        // Cleanup
-        return () => {
-            anim.kill();
+        const handleScroll = () => {
+            if (ticking) return;
+            ticking = true;
+
+            requestAnimationFrame(() => {
+                const rect = element.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+
+                // Calculate progress: 0 when element enters bottom, 1 when it exits top
+                const progress = Math.max(0, Math.min(1,
+                    (windowHeight - rect.top) / (windowHeight + rect.height)
+                ));
+
+                // Move element up by `float * progress` pixels
+                element.style.transform = `translateY(${-float * progress}px)`;
+                ticking = false;
+            });
         };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll(); // Initial position
+
+        return () => window.removeEventListener('scroll', handleScroll);
     }, [float]);
 
     return (
-        <div ref={elementRef} className={className}>
+        <div ref={elementRef} className={className} style={{ willChange: 'transform' }}>
             {children}
         </div>
     );
