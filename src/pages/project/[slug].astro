@@ -20,6 +20,11 @@ if (!slug) {
 const project: Project = await sanityClient.fetch(`
   *[_type == "project" && slug.current == $slug][0]{
     ...,
+    progressPhotos[] {
+      image,
+      caption,
+      date
+    },
     relatedProducts[]->{
       _id,
       name,
@@ -33,12 +38,15 @@ if (!project) {
 }
 
 const title = getLocaleString(project.title, lang);
+const isCompleted = project.status === 'completed';
+const mainImage = project.afterImage || project.beforeImage;
+const hasBeforeAfter = project.beforeImage && project.afterImage;
 ---
 
 <BaseLayout 
   title={title}
   description={getLocaleString(project.description, lang)}
-  image={project.afterImage ? urlFor(project.afterImage).width(1200).url() : undefined}
+  image={mainImage ? urlFor(mainImage).width(1200).url() : undefined}
 >
   <FloatingActionButton client:load mode="simple" lang={lang} />
 
@@ -49,9 +57,26 @@ const title = getLocaleString(project.title, lang);
         {title}
       </h1>
       <div class="flex items-center justify-center gap-4 text-sm md:text-base text-secondary">
+        {/* Status Badge */}
+        <span class={`px-4 py-1.5 rounded-full font-medium flex items-center gap-2 ${
+          isCompleted 
+            ? 'bg-green-500/10 text-green-600 dark:text-green-400' 
+            : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+        }`}>
+          {isCompleted ? (
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+          ) : (
+            <span class="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
+          )}
+          {isCompleted ? t('completed', lang) : t('active', lang)}
+        </span>
         {project.category && (
           <span class="px-3 py-1 bg-secondary/10 rounded-full">
-            {project.category}
+            {project.category === 'interior' ? (lang === 'ar' ? 'داخلي' : 'Interior') :
+             project.category === 'exterior' ? (lang === 'ar' ? 'خارجي' : 'Exterior') :
+             (lang === 'ar' ? 'داخلي وخارجي' : 'Interior & Exterior')}
           </span>
         )}
         {project.year && (
@@ -60,26 +85,46 @@ const title = getLocaleString(project.title, lang);
           </span>
         )}
       </div>
+      {/* Location & Start Date */}
+      <div class="flex items-center justify-center gap-6 mt-4 text-sm text-extra-2 dark:text-secondary/60">
+        {project.location && (
+          <span class="inline-flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            {getLocaleString(project.location, lang)}
+          </span>
+        )}
+        {project.startDate && (
+          <span class="inline-flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            {project.startDate}
+          </span>
+        )}
+      </div>
     </div>
   </section>
 
-  <!-- 2. Before & After Slider (Full Screen/Large Hero) -->
+  <!-- 2. Before & After Slider OR Main Image -->
   <section class="w-full h-[60vh] md:h-[80vh] relative bg-black">
-    {project.afterImage ? (
+    {hasBeforeAfter ? (
       <BeforeAfterSlider 
         client:visible
-        beforeImage={urlFor(project.beforeImage).width(1920).quality(90).url()}
-        afterImage={urlFor(project.afterImage).width(1920).quality(90).url()}
+        beforeImage={urlFor(project.beforeImage!).width(1920).quality(90).url()}
+        afterImage={urlFor(project.afterImage!).width(1920).quality(90).url()}
         beforeAlt={lang === 'ar' ? 'قبل' : 'Before'}
         afterAlt={lang === 'ar' ? 'بعد' : 'After'}
       />
-    ) : (
+    ) : mainImage ? (
       <img
-        src={urlFor(project.beforeImage).width(1920).quality(90).url()}
+        src={urlFor(mainImage).width(1920).quality(90).url()}
         alt={getLocaleString(project.title, lang)}
         class="w-full h-full object-cover"
       />
-    )}
+    ) : null}
   </section>
 
   <!-- 3. Project Info -->
@@ -123,20 +168,95 @@ const title = getLocaleString(project.title, lang);
     </div>
   </section>
 
-  <!-- 4. Project Gallery (Development Phases) -->
-  {project.gallery && project.gallery.length > 0 && (
+  <!-- 4. Photos Section -->
+  {!isCompleted && project.progressPhotos && project.progressPhotos.length > 0 && (
+    <!-- Active: Progress Photos (progressPhotos + gallery merged) -->
     <section class="py-20 bg-extra-1/30 dark:bg-black/20">
       <div class="container">
         <h2 class="text-3xl font-bold mb-12 text-center">
-          {lang === 'ar' ? 'مراحل العمل' : 'Development Phases'}
+          {t('progressPhotos', lang)}
         </h2>
         
-        <ImageGallery client:load images={project.gallery} title={title} />
+        {project.progressPhotos && project.progressPhotos.length > 0 && (
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mb-12">
+            {project.progressPhotos
+              .sort((a, b) => {
+                if (!a.date && !b.date) return 0;
+                if (!a.date) return 1;
+                if (!b.date) return -1;
+                return new Date(b.date).getTime() - new Date(a.date).getTime();
+              })
+              .map((photo, i) => (
+              <div class="group relative aspect-square overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <img
+                  src={urlFor(photo.image).width(400).height(400).fit('crop').quality(80).url()}
+                  alt={getLocaleString(photo.caption, lang) || `Progress ${i + 1}`}
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                  {photo.caption && (
+                    <p class="text-white text-sm font-medium truncate">
+                      {getLocaleString(photo.caption, lang)}
+                    </p>
+                  )}
+                  {photo.date && (
+                    <p class="text-white/70 text-xs mt-1">{photo.date}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )}
 
-  <!-- 5. Navigation Buttons -->
+  {isCompleted && project.progressPhotos && project.progressPhotos.length > 0 && (
+    <!-- Completed: Project Gallery (progressPhotos + gallery combined) -->
+    <section class="py-20 bg-extra-1/30 dark:bg-black/20">
+      <div class="container">
+        <h2 class="text-3xl font-bold mb-12 text-center">
+          {lang === 'ar' ? 'معرض المشروع' : 'Project Gallery'}
+        </h2>
+        
+        {/* Progress photos as grid */}
+        {project.progressPhotos && project.progressPhotos.length > 0 && (
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mb-12">
+            {project.progressPhotos
+              .sort((a, b) => {
+                if (!a.date && !b.date) return 0;
+                if (!a.date) return 1;
+                if (!b.date) return -1;
+                return new Date(b.date).getTime() - new Date(a.date).getTime();
+              })
+              .map((photo, i) => (
+              <div class="group relative aspect-square overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <img
+                  src={urlFor(photo.image).width(400).height(400).fit('crop').quality(80).url()}
+                  alt={getLocaleString(photo.caption, lang) || `Phase ${i + 1}`}
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                  {photo.caption && (
+                    <p class="text-white text-sm font-medium truncate">
+                      {getLocaleString(photo.caption, lang)}
+                    </p>
+                  )}
+                  {photo.date && (
+                    <p class="text-white/70 text-xs mt-1">{photo.date}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  <!-- 6. Navigation Buttons -->
   <section class="py-20">
     <div class="container">
       <div class="flex flex-col md:flex-row items-center justify-center gap-6">
@@ -148,10 +268,12 @@ const title = getLocaleString(project.title, lang);
         </a>
         
         <a 
-          href="/portfolio"
+          href={isCompleted ? "/portfolio" : "/current-projects"}
           class="w-full md:w-auto px-8 py-4 bg-white dark:bg-primary border-2 border-secondary text-secondary font-bold rounded-lg hover:bg-secondary hover:text-white transition-all duration-300 text-center"
         >
-          {lang === 'ar' ? 'العودة للمعرض' : 'Back to Portfolio'}
+          {isCompleted 
+            ? (lang === 'ar' ? 'العودة للمعرض' : 'Back to Portfolio')
+            : (lang === 'ar' ? 'العودة للمشاريع الحالية' : 'Back to Current Projects')}
         </a>
       </div>
     </div>

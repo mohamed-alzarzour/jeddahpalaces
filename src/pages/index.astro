@@ -153,7 +153,7 @@ const featuredProjects = homepageSettings?.featuredProjects || [];
                 <!-- Before/After Slider (3/4 width on desktop) -->
                 <div class={`lg:col-span-3 order-2 ${index % 2 === 0 ? 'lg:order-1' : 'lg:order-2'}`}>
                   <div class="aspect-video lg:aspect-[16/10] w-full">
-                    {project.afterImage ? (
+                    {project.beforeImage && project.afterImage ? (
                       <BeforeAfterSlider 
                         client:visible
                         beforeImage={urlFor(project.beforeImage).width(1200).quality(90).url()}
@@ -161,14 +161,14 @@ const featuredProjects = homepageSettings?.featuredProjects || [];
                         beforeAlt={lang === 'ar' ? 'قبل' : 'Before'}
                         afterAlt={lang === 'ar' ? 'بعد' : 'After'}
                       />
-                    ) : (
+                    ) : (project.afterImage || project.beforeImage) ? (
                       <img
-                        src={urlFor(project.beforeImage).width(1200).quality(90).url()}
+                        src={urlFor(project.afterImage || project.beforeImage!).width(1200).quality(90).url()}
                         alt={getLocaleString(project.title, lang)}
                         class="w-full h-full object-cover rounded-lg"
                         loading="lazy"
                       />
-                    )}
+                    ) : null}
                   </div>
                 </div>
 

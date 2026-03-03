@@ -47,6 +47,12 @@ export interface Product {
     }>;
 }
 
+export interface ProgressPhoto {
+    image: SanityImage;
+    caption?: LocaleString;
+    date?: string;
+}
+
 export interface Project {
     _id: string;
     _type: 'project';
@@ -54,10 +60,14 @@ export interface Project {
     slug: {
         current: string;
     };
-    beforeImage: SanityImage;
-    afterImage: SanityImage;
+    status?: 'active' | 'completed';
+    beforeImage?: SanityImage;
+    afterImage?: SanityImage;
+    progressPhotos?: ProgressPhoto[];
     gallery?: SanityImage[];
     description?: LocaleText;
+    location?: LocaleString;
+    startDate?: string;
     relatedProducts?: Product[];
     category?: 'interior' | 'exterior' | 'both';
     year?: number;
