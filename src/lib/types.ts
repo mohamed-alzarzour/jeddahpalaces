@@ -107,7 +107,7 @@ export interface ContactInfo {
 export interface GalleryPhoto {
     image: SanityImage;
     caption?: LocaleString;
-    category?: string;
+    categories?: string[];
 }
 
 export interface PhotoGallery {

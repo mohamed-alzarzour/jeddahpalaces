@@ -20,7 +20,7 @@ const photos = gallery?.photos || [];
 const PHOTOS_PER_PAGE = 24;
 
 // Extract unique categories for filter
-const categories = [...new Set(photos.map(p => p.category).filter(Boolean))] as string[];
+const categories = [...new Set(photos.flatMap(p => p.categories || []).filter(Boolean))] as string[];
 
 const categoryLabels: Record<string, Record<string, string>> = {
   interior: { ar: 'داخلي', en: 'Interior' },
@@ -79,7 +79,7 @@ const categoryLabels: Record<string, Record<string, string>> = {
             {photos.map((photo, i) => (
               <div 
                 class="gallery-item group relative aspect-square overflow-hidden rounded-lg cursor-zoom-in shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-                data-category={photo.category || 'all'}
+                data-categories={(photo.categories || []).join(',')}
                 data-index={i}
                 style={i >= PHOTOS_PER_PAGE ? 'display: none;' : ''}
               >
@@ -184,8 +184,8 @@ const categoryLabels: Record<string, Record<string, string>> = {
       shownItems = 24;
 
       allItems.forEach(item => {
-        const itemCat = item.dataset.category;
-        const matchesFilter = category === 'all' || itemCat === category;
+        const itemCats = (item.dataset.categories || '').split(',');
+        const matchesFilter = category === 'all' || itemCats.includes(category);
         item.style.display = matchesFilter ? '' : 'none';
       });
 
@@ -194,8 +194,8 @@ const categoryLabels: Record<string, Record<string, string>> = {
         (category === 'all' || item.dataset.category === category));
       
       visibleItems = allItems.filter(item => {
-        const itemCat = item.dataset.category;
-        return category === 'all' || itemCat === category;
+        const itemCats = (item.dataset.categories || '').split(',');
+        return category === 'all' || itemCats.includes(category);
       });
 
       visibleItems.forEach((item, i) => {
