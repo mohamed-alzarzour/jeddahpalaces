@@ -167,7 +167,6 @@ const hasBeforeAfter = project.beforeImage && project.afterImage;
     </div>
   </section>
 
-  <!-- 4. Photos Section -->
   {!isCompleted && project.progressPhotos && project.progressPhotos.length > 0 && (
     <!-- Active: Progress Photos (progressPhotos + gallery merged) -->
     <section class="py-20 bg-extra-1/30 dark:bg-black/20">
@@ -177,7 +176,7 @@ const hasBeforeAfter = project.beforeImage && project.afterImage;
         </h2>
         
         {project.progressPhotos && project.progressPhotos.length > 0 && (
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mb-12">
+          <div class="project-photo-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mb-12">
             {project.progressPhotos
               .sort((a, b) => {
                 if (!a.date && !b.date) return 0;
@@ -186,7 +185,7 @@ const hasBeforeAfter = project.beforeImage && project.afterImage;
                 return new Date(b.date).getTime() - new Date(a.date).getTime();
               })
               .map((photo, i) => (
-              <div class="group relative aspect-square overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <div class="project-photo-item group relative aspect-square overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-zoom-in">
                 <img
                   src={urlFor(photo.image).width(400).height(400).fit('crop').quality(80).url()}
                   alt={getLocaleString(photo.caption, lang) || `Progress ${i + 1}`}
@@ -203,6 +202,12 @@ const hasBeforeAfter = project.beforeImage && project.afterImage;
                     <p class="text-white/70 text-xs mt-1">{photo.date}</p>
                   )}
                 </div>
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <svg class="w-8 h-8 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                  </svg>
+                </div>
+                <input type="hidden" class="full-url" value={urlFor(photo.image).width(1920).quality(90).url()} />
               </div>
             ))}
           </div>
@@ -221,7 +226,7 @@ const hasBeforeAfter = project.beforeImage && project.afterImage;
         
         {/* Progress photos as grid */}
         {project.progressPhotos && project.progressPhotos.length > 0 && (
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mb-12">
+          <div class="project-photo-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mb-12">
             {project.progressPhotos
               .sort((a, b) => {
                 if (!a.date && !b.date) return 0;
@@ -230,7 +235,7 @@ const hasBeforeAfter = project.beforeImage && project.afterImage;
                 return new Date(b.date).getTime() - new Date(a.date).getTime();
               })
               .map((photo, i) => (
-              <div class="group relative aspect-square overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <div class="project-photo-item group relative aspect-square overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-zoom-in">
                 <img
                   src={urlFor(photo.image).width(400).height(400).fit('crop').quality(80).url()}
                   alt={getLocaleString(photo.caption, lang) || `Phase ${i + 1}`}
@@ -247,6 +252,12 @@ const hasBeforeAfter = project.beforeImage && project.afterImage;
                     <p class="text-white/70 text-xs mt-1">{photo.date}</p>
                   )}
                 </div>
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <svg class="w-8 h-8 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                  </svg>
+                </div>
+                <input type="hidden" class="full-url" value={urlFor(photo.image).width(1920).quality(90).url()} />
               </div>
             ))}
           </div>
@@ -278,4 +289,103 @@ const hasBeforeAfter = project.beforeImage && project.afterImage;
     </div>
   </section>
 
+  <!-- Project Lightbox Overlay -->
+  <div id="project-lightbox" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm hidden items-center justify-center" role="dialog" aria-modal="true">
+    <button id="plb-close" class="absolute top-4 end-4 z-10 text-white/80 hover:text-white p-2 transition-colors" aria-label="Close">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+    <button id="plb-prev" class="absolute start-4 top-1/2 -translate-y-1/2 z-10 text-white/80 hover:text-white p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all" aria-label="Previous">
+      <svg class="w-6 h-6 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    <button id="plb-next" class="absolute end-4 top-1/2 -translate-y-1/2 z-10 text-white/80 hover:text-white p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all" aria-label="Next">
+      <svg class="w-6 h-6 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+    <img id="plb-img" src="" alt="" class="max-h-[90vh] max-w-[90vw] object-contain rounded-lg shadow-2xl transition-opacity duration-300" />
+    <p id="plb-caption" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-black/50 px-4 py-2 rounded-full backdrop-blur-sm"></p>
+  </div>
+
 </BaseLayout>
+
+<script>
+  function initProjectLightbox() {
+    const lightbox = document.getElementById('project-lightbox');
+    const lightboxImg = document.getElementById('plb-img') as HTMLImageElement | null;
+    const lightboxCaption = document.getElementById('plb-caption');
+    const closeBtn = document.getElementById('plb-close');
+    const prevBtn = document.getElementById('plb-prev');
+    const nextBtn = document.getElementById('plb-next');
+
+    if (!lightbox || !lightboxImg) return;
+
+    const allItems = Array.from(document.querySelectorAll('.project-photo-item')) as HTMLElement[];
+    if (allItems.length === 0) return;
+
+    let currentIndex = -1;
+
+    function openLightbox(index: number) {
+      if (index < 0 || index >= allItems.length) return;
+      currentIndex = index;
+      const item = allItems[index];
+      const fullUrl = item.querySelector('.full-url') as HTMLInputElement;
+      const alt = item.querySelector('img')?.alt || '';
+      const caption = item.querySelector('p')?.textContent || '';
+
+      lightboxImg!.src = fullUrl?.value || '';
+      lightboxImg!.alt = alt;
+      if (lightboxCaption) {
+        lightboxCaption.textContent = caption;
+        lightboxCaption.style.display = caption ? '' : 'none';
+      }
+
+      lightbox!.classList.remove('hidden');
+      lightbox!.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox!.classList.add('hidden');
+      lightbox!.classList.remove('flex');
+      document.body.style.overflow = '';
+      currentIndex = -1;
+    }
+
+    function navigateLightbox(direction: number) {
+      const newIndex = currentIndex + direction;
+      if (newIndex >= 0 && newIndex < allItems.length) {
+        openLightbox(newIndex);
+      }
+    }
+
+    // Click on photo to open
+    allItems.forEach((item, i) => {
+      item.addEventListener('click', () => openLightbox(i));
+    });
+
+    closeBtn?.addEventListener('click', closeLightbox);
+    prevBtn?.addEventListener('click', () => navigateLightbox(-1));
+    nextBtn?.addEventListener('click', () => navigateLightbox(1));
+
+    // Close on background click
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (lightbox.classList.contains('hidden')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') navigateLightbox(document.documentElement.dir === 'rtl' ? 1 : -1);
+      if (e.key === 'ArrowRight') navigateLightbox(document.documentElement.dir === 'rtl' ? -1 : 1);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initProjectLightbox);
+  document.addEventListener('astro:page-load', initProjectLightbox);
+</script>
+
