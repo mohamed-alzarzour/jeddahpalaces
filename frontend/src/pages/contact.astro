@@ -106,13 +106,13 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL;
           )}
 
           {/* Social Media */}
-          {contactInfo?.socialMedia && contactInfo.socialMedia.length > 0 && (
+          {contactInfo?.socialMedia && contactInfo.socialMedia.filter(s => s.url).length > 0 && (
             <div class="bg-white dark:bg-primary/30 rounded-xl p-6 shadow-lg">
               <h3 class="font-bold text-lg mb-4">
                 {lang === 'ar' ? 'تابعنا' : 'Follow Us'}
               </h3>
               <div class="flex gap-3">
-                {contactInfo.socialMedia.map((social) => (
+                {contactInfo.socialMedia.filter(s => s.url).map((social) => (
                   <SocialLink 
                     platform={social.platform} 
                     url={social.url} 

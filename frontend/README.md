@@ -291,6 +291,6 @@ This project is proprietary software developed for **Jeddah Palaces for Natural 
 
 <div align="center">
 
-**Developed by: Eng.Mohamed Ahmed Alzarzour**
+**Developed by: Eng. Mohamed Ahmed Alzarzour**
 
 </div>

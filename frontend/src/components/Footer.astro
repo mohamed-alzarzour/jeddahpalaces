@@ -75,9 +75,9 @@ const currentYear = new Date().getFullYear();
               <span>{contactInfo.phone}</span>
             </a>
           )}
-          {contactInfo?.socialMedia && contactInfo.socialMedia.length > 0 && (
+          {contactInfo?.socialMedia && contactInfo.socialMedia.filter(s => s.url).length > 0 && (
             <div class="flex gap-3 mt-4">
-              {contactInfo.socialMedia.map((social) => (
+              {contactInfo.socialMedia.filter(s => s.url).map((social) => (
                 <SocialLink 
                   platform={social.platform} 
                   url={social.url} 
@@ -103,6 +103,16 @@ const currentYear = new Date().getFullYear();
           class="text-secondary hover:text-accent transition-colors underline underline-offset-2"
         >
           {lang === 'ar' ? 'محمد أحمد الزرزور' : 'Mohamed Ahmed Alzarzour'}
+        </a>
+      </p>
+      <p class="text-xs text-extra-2/70 dark:text-secondary/50">
+        <a 
+          href="https://github.com/mohamed-alzarzour/jeddahpalaces" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="text-secondary hover:text-accent transition-colors underline underline-offset-2"
+        >
+          GitHub
         </a>
       </p>
     </div>
