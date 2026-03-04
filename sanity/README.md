@@ -61,41 +61,16 @@ The Studio uses a custom desk layout organized into:
 
 ---
 
-## 🚀 Getting Started
+## 🚀 CMS Features
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org) 18+
-- A [Sanity](https://sanity.io) account and project
-
-### Installation
-
-```bash
-cd sanity
-npm install
-```
-
-### Development
-
-```bash
-npm run dev
-```
-
-Studio will be available at `http://localhost:****`
-
-### Deployment
-
-```bash
-npm run deploy
-```
-
-### Regenerate Types
-
-```bash
-npm run typegen
-```
-
-This extracts `schema.json` and generates `sanity.types.ts`.
+- **Custom Desk Structure** — Organized sidebar with settings, projects by status, products, and services
+- **Singleton Documents** — Homepage, About, Contact, and Gallery managed as single-instance documents
+- **Project Status Workflow** — Projects flow from "Active" → "Completed" with automatic page routing
+- **Bilingual Content** — Every text field supports Arabic and English via custom `localeString` / `localeText` types
+- **Image Pipeline** — Sanity CDN with automatic WebP/AVIF, responsive sizing, and hotspot cropping
+- **Progress Photo Timelines** — Dated photos sorted chronologically for each project
+- **Multi-Category Gallery** — Photos tagged with multiple categories for filterable gallery display
+- **Type Generation** — Auto-generated TypeScript types via `sanity typegen` for type-safe frontend queries
 
 ---
 

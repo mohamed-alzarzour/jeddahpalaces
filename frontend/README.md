@@ -109,69 +109,51 @@ jeddahpalaces/
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Key Features
 
-### Prerequisites
+### 🌐 Full Bilingual Architecture
 
-- [Node.js](https://nodejs.org) 18+
-- [npm](https://npmjs.com) or [pnpm](https://pnpm.io)
-- A [Sanity](https://sanity.io) account
-- A [Web3Forms](https://web3forms.com) access key
+- Complete Arabic (RTL) and English (LTR) with seamless toggle
+- Custom `localeString` / `localeText` Sanity field types for all content
+- Language middleware auto-detects and persists user preference via `localStorage`
+- 50+ translation keys covering every UI element
 
-### Installation
+### 🌙 Dark / Light Mode
 
-```bash
-# Clone the repository
-git clone https://github.com/mohamed-alzarzour/jeddahpalaces.git
-cd jeddahpalaces
+- Default dark theme with instant toggle — no flash of light mode
+- Inline `<head>` script applies theme before first render
+- Persistent preference across sessions
 
-# Install frontend dependencies
-cd frontend
-npm install
+### 📸 Interactive Image Lightbox
 
-# Install Sanity Studio dependencies
-cd ../sanity
-npm install
-```
+- Click-to-zoom across gallery, project gallery, and progress photos
+- Full-resolution 1920px images loaded on demand
+- Prev/Next navigation + keyboard support (← → Esc)
+- RTL-aware arrow direction
 
-### Environment Setup
+### 🔄 Before / After Comparison Slider
 
-```bash
-# Copy the example env file
-cp frontend/.env.example frontend/.env
-```
+- Touch-enabled draggable slider on completed project pages
+- Shows raw stone → finished design transformation
 
-Edit `frontend/.env` with your actual values:
+### 🏗️ Project Lifecycle Management
 
-```env
-# Sanity CMS
-PUBLIC_SANITY_PROJECT_ID=your_project_id
-PUBLIC_SANITY_DATASET=**********
-PUBLIC_SANITY_API_VERSION=20**-**-**
+- Create active projects with progress photos in Sanity Studio
+- Automatic routing: active → `/current-projects`, completed → `/portfolio`
+- Completion requires an "After" image for quality assurance
+- Progress timelines sorted by date
 
-# Web3Forms
-PUBLIC_WEB3FORMS_KEY=your_web3forms_key
-PUBLIC_CONTACT_EMAIL=your@email.com
-```
+### 📱 Responsive & Animated
 
-### Development
+- Mobile-first layout for all screen sizes
+- Scroll-linked parallax, page transitions, micro-animations
+- Animated mobile menu, floating action button
 
-```bash
-# Start Astro dev server
-cd frontend
-npm run dev
+### 🛡️ Serverless Contact Form
 
-# Start Sanity Studio (in a separate terminal)
-cd sanity
-npm run dev
-```
-
-### Production Build
-
-```bash
-cd frontend
-npm run build
-```
+- Web3Forms integration — no backend required
+- Form validation with bilingual error/success messages
+- Spam protection built-in
 
 ---
 

@@ -88,47 +88,46 @@ jeddahpalaces/
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Key Features
 
-### Prerequisites
+### 🌐 Full Bilingual System
 
-- [Node.js](https://nodejs.org) 18+
-- A [Sanity](https://sanity.io) account
-- A [Web3Forms](https://web3forms.com) access key
+- Complete Arabic (RTL) and English (LTR) support with seamless language toggle
+- Custom `localeString` and `localeText` Sanity field types for all content
+- Language middleware auto-detects and persists user preference
+- 50+ translation keys covering every UI element
 
-### Setup
+### 🌙 Dark / Light Mode
 
-```bash
-# Clone the repository
-git clone https://github.com/mohamed-alzarzour/jeddahpalaces.git
-cd jeddahpalaces
+- Default dark theme with one-click toggle
+- Instant theme application via inline `<head>` script — zero flash
+- Preference saved in `localStorage` and persists across sessions
 
-# Frontend
-cd frontend
-npm install
-cp .env.example .env    # Edit with your actual values
-npm run dev             # → http://localhost:4321
+### 📸 Interactive Image Lightbox
 
-# Sanity Studio (separate terminal)
-cd ../sanity
-npm install
-npm run dev             # → http://localhost:3333
-```
+- Click-to-zoom on all gallery, project, and progress photos
+- Full-resolution 1920px images loaded on demand
+- Prev/Next navigation with keyboard support (← → Esc)
+- RTL-aware arrow direction
 
-### Environment Variables
+### 🔄 Before / After Slider
 
-Create `frontend/.env` from the example file:
+- Draggable comparison slider on completed project pages
+- Shows transformation from raw stone to finished design
+- Touch-enabled for mobile devices
 
-```env
-# Sanity CMS
-PUBLIC_SANITY_PROJECT_ID=your_project_id
-PUBLIC_SANITY_DATASET=**********
-PUBLIC_SANITY_API_VERSION=20**-**-**
+### 🏗️ Project Lifecycle Management
 
-# Web3Forms
-PUBLIC_WEB3FORMS_KEY=your_web3forms_key
-PUBLIC_CONTACT_EMAIL=your@email.com
-```
+- Engineers create active projects with progress photos in Sanity Studio
+- Projects move from `/current-projects` → `/portfolio` upon completion
+- Completion requires an "After" image for quality assurance
+- Progress photo timelines sorted by date
+
+### 📱 Responsive & Animated
+
+- Mobile-first design optimized for all screen sizes
+- Scroll-linked parallax effects and page transitions
+- Micro-animations on hover, floating action button, animated mobile menu
 
 ---
 
