@@ -14,7 +14,7 @@
 
 ---
 
-A fully bilingual **(Arabic/English)**, performance-optimized web application for a natural stone and interior finishing company based in **Jeddah, Saudi Arabia**. Built with modern web technologies and a headless CMS for seamless content management.
+A fully bilingual **(Arabic/English)**, performance-optimized web application specializing in natural stone and interior finishes, based in **Jeddah, Saudi Arabia**. Built with modern web technologies and a headless CMS for seamless content management.
 
 [Live Demo](https://jeddahpalaces.vercel.app) · [Frontend Docs](./frontend/README.md) · [Sanity Docs](./sanity/README.md) · [GTmetrix Report](./gtmetrix-report.pdf)
 
@@ -179,7 +179,7 @@ This project is proprietary software developed for **Jeddah Palaces for Natural 
 
 <div align="center">
 
-**Built with ❤️ by Eng. Mohamed Ahmed Alzarzour**
+**Built by Eng. Mohamed Ahmed Alzarzour**
 
 _Jeddah, Saudi Arabia 🇸🇦_
 

@@ -53,7 +53,7 @@
 ## 🏗️ Architecture
 
 ```
-JPNS/
+jeddahpalaces/
 ├── frontend/                   # Astro application
 │   ├── src/
 │   │   ├── components/         # 13 reusable components (Astro + React)
@@ -90,7 +90,7 @@ JPNS/
 │   │   └── localeString/Text.ts    # i18n field types
 │   └── desk/
 │       └── structure.ts            # Custom desk with project status views
-└── tests/                      # Performance test reports
+└── gtmetrix-report.pdf         # Performance test report
 ```
 
 ---
@@ -122,8 +122,8 @@ JPNS/
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/JPNS.git
-cd JPNS
+git clone https://github.com/mohamed-alzarzour/jeddahpalaces.git
+cd jeddahpalaces
 
 # Install frontend dependencies
 cd frontend
