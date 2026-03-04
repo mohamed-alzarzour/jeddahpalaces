@@ -30,6 +30,15 @@ const ogImage = image || '/logo.png';
 <!doctype html>
 <html lang={lang} dir={dir} class="scroll-smooth">
   <head>
+    <script is:inline>
+      // Apply dark mode before render to prevent flash
+      (function() {
+        var stored = localStorage.getItem('jpns_dark_mode');
+        if (stored === null || stored === 'true') {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />

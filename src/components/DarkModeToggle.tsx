@@ -3,12 +3,12 @@ import { useState, useEffect } from 'react';
 const DARK_MODE_KEY = 'jpns_dark_mode';
 
 export default function DarkModeToggle() {
-    const [isDark, setIsDark] = useState(false);
+    const [isDark, setIsDark] = useState(true);
 
     useEffect(() => {
-        // Check localStorage on mount
+        // Check localStorage on mount — default to dark if no preference saved
         const stored = localStorage.getItem(DARK_MODE_KEY);
-        const darkMode = stored === 'true';
+        const darkMode = stored === null ? true : stored === 'true';
         setIsDark(darkMode);
 
         if (darkMode) {
