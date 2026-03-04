@@ -1,10 +1,28 @@
+# Dependencies
 node_modules/
+
+# Build output
 dist/
 .astro/
 .vercel/
+.sanity/
+
+# Environment files
 .env
 .env.local
 .env.production
+
+# OS files
 .DS_Store
-.vscode/
 *.log
+
+# IDE
+.vscode/
+.idea/
+
+# TypeScript
+*.tsbuildinfo
+
+# Sanity
+*.pem
+*.local
