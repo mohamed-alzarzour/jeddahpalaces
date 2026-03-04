@@ -1,207 +1,296 @@
-# Jeddah Palaces for Natural Stone - Frontend
+<div align="center">
 
-Bilingual (Arabic/English) portfolio website built with Astro.js, showcasing interior and exterior design projects, natural stone products, and services.
+# 🏛️ Jeddah Palaces for Natural Stone
 
-## 🚀 Tech Stack
+### Premium Interior & Exterior Design | تصميم داخلي وخارجي فاخر
 
-- **Framework**: Astro.js (static site generation)
-- **Styling**: Tailwind CSS v3
-- **Language**: TypeScript (strict mode)
-- **CMS**: Sanity.io (Headless CMS)
-- **UI Components**: React (for interactive islands)
-- **Deployment**: Vercel
+**A fully bilingual (Arabic/English), performance-optimized web application for a natural stone and interior finishing company based in Jeddah, Saudi Arabia.**
 
-## 📋 Features
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-jeddahpalaces.vercel.app-C5B080?style=for-the-badge)](https://jeddahpalaces.vercel.app)
+[![Astro](https://img.shields.io/badge/Astro-5.x-ff5d01?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build)
+[![Sanity](https://img.shields.io/badge/Sanity_CMS-Studio-f36458?style=for-the-badge&logo=sanity&logoColor=white)](https://www.sanity.io)
+[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com)
 
-✅ **Bilingual Support** (Arabic RTL/English LTR) with localStorage persistence  
-✅ **Dark Mode** with smooth transitions  
-✅ **Before/After Image Sliders** for project showcases  
-✅ **Auto-Rotating Product Galleries**  
-✅ **Reverse Reference Queries** (products → projects)  
-✅ **SEO Optimized** with meta tags, Open Graph, Schema.org markup  
-✅ **Accessible** (WCAG 2.1 AA compliant)  
-✅ **Performance Optimized** (lazy loading, image optimization)  
-✅ **Contact Form** with validation and spam protection  
+</div>
 
-## 🛠️ Setup Instructions
+---
 
-### 1. Install Dependencies
+## ✨ Features
+
+### 🎨 Design & UX
+
+- **Bilingual Support** — Full Arabic (RTL) and English (LTR) with seamless language toggle
+- **Dark/Light Mode** — Theme persistence with zero-flash loading
+- **Responsive Design** — Mobile-first approach, optimized for all screen sizes
+- **Smooth Animations** — Scroll-linked parallax, page transitions, and micro-interactions
+- **Before/After Slider** — Interactive comparison slider for project showcases
+
+### 📄 Pages
+
+| Page                 | Description                                                                  |
+| -------------------- | ---------------------------------------------------------------------------- |
+| **Home**             | Hero section, featured projects with before/after sliders, services overview |
+| **Products**         | Product catalog with image galleries and category filtering                  |
+| **Portfolio**        | Completed project showcase with before/after transformations                 |
+| **Current Projects** | Active construction projects with progress photo timelines                   |
+| **Gallery**          | Filterable photo gallery with multi-category support and lightbox            |
+| **Services**         | Service offerings managed via CMS                                            |
+| **About**            | Company information and team details                                         |
+| **Contact**          | Contact form (Web3Forms), social links, location info                        |
+| **404**              | Custom error page                                                            |
+
+### ⚙️ Technical
+
+- **Headless CMS** — Sanity Studio with custom schemas, desk structure, and image pipeline
+- **SSR** — Server-side rendering on Vercel Edge for SEO and performance
+- **Image Optimization** — Automatic WebP/AVIF via Sanity CDN with `auto=format`
+- **View Transitions** — Astro Client Router for SPA-like navigation
+- **Security Headers** — CSP, X-Frame-Options, HSTS, Referrer-Policy via `vercel.json`
+- **SEO Optimized** — Structured meta tags, Open Graph, canonical URLs, semantic HTML
+
+---
+
+## 🏗️ Architecture
+
+```
+JPNS/
+├── frontend/                   # Astro application
+│   ├── src/
+│   │   ├── components/         # 13 reusable components (Astro + React)
+│   │   │   ├── Header.astro        # Navigation with 8 links
+│   │   │   ├── Footer.astro        # Footer with social links
+│   │   │   ├── MobileMenu.tsx      # Animated mobile menu (React)
+│   │   │   ├── ContactForm.tsx     # Form with validation (React)
+│   │   │   ├── BeforeAfterSlider.tsx
+│   │   │   ├── ProductImageSlider.tsx  # Product image carousel
+│   │   │   ├── ScrollFloat.tsx     # Parallax scroll effect
+│   │   │   ├── FloatingActionButton.tsx
+│   │   │   ├── DarkModeToggle.tsx
+│   │   │   ├── LanguageToggle.tsx
+│   │   │   └── ...
+│   │   ├── pages/              # 9 pages + dynamic routes
+│   │   ├── layouts/            # BaseLayout with SEO
+│   │   ├── lib/                # Utilities
+│   │   │   ├── sanity.ts           # Sanity client + image builder
+│   │   │   ├── i18n.ts            # Bilingual translations (AR/EN)
+│   │   │   └── types.ts           # TypeScript interfaces
+│   │   ├── styles/             # Global CSS + Tailwind config
+│   │   └── middleware.ts       # Language detection
+│   ├── vercel.json             # Security headers + cache config
+│   └── .env.example            # Environment variables template
+├── sanity/                     # Sanity Studio
+│   ├── schemaTypes/            # 10 content schemas
+│   │   ├── project.ts              # Projects (active/completed workflow)
+│   │   ├── product.ts              # Product catalog
+│   │   ├── homepageSettings.ts     # Homepage configuration
+│   │   ├── photoGallery.ts         # Photo gallery with categories
+│   │   ├── contactInfo.ts          # Contact information
+│   │   ├── service.ts              # Services
+│   │   ├── aboutPage.ts            # About page content
+│   │   └── localeString/Text.ts    # i18n field types
+│   └── desk/
+│       └── structure.ts            # Custom desk with project status views
+└── tests/                      # Performance test reports
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer          | Technology                                                    |
+| -------------- | ------------------------------------------------------------- |
+| **Framework**  | [Astro 5](https://astro.build) — Static + SSR hybrid          |
+| **UI Library** | [React 18](https://react.dev) — Interactive islands           |
+| **Styling**    | [Tailwind CSS 3](https://tailwindcss.com) — Utility-first     |
+| **CMS**        | [Sanity v3](https://sanity.io) — Headless content management  |
+| **Deployment** | [Vercel](https://vercel.com) — Edge SSR + CDN                 |
+| **Forms**      | [Web3Forms](https://web3forms.com) — Serverless contact form  |
+| **Language**   | [TypeScript](https://typescriptlang.org) — Type-safe codebase |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org) 18+
+- [npm](https://npmjs.com) or [pnpm](https://pnpm.io)
+- A [Sanity](https://sanity.io) account
+- A [Web3Forms](https://web3forms.com) access key
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/JPNS.git
+cd JPNS
+
+# Install frontend dependencies
 cd frontend
+npm install
+
+# Install Sanity Studio dependencies
+cd ../sanity
 npm install
 ```
 
-### 2. Environment Variables
-
-The `.env` file is already configured with Sanity credentials:
-
-```env
-PUBLIC_SANITY_PROJECT_ID=pch9lqf5
-PUBLIC_SANITY_DATASET=production
-PUBLIC_SANITY_API_VERSION=2024-12-01
-```
-
-### 3. Configure Contact Form
-
-The contact form uses Web3Forms. To complete setup:
-
-1. Visit https://web3forms.com/ and create a free account
-2. Create a new form and copy your access key
-3. Open `src/components/ContactForm.tsx`
-4. Replace `YOUR_WEB3FORMS_ACCESS_KEY` (line 52) with your actual key
-
-See `WEB3FORMS_SETUP.md` for more details.
-
-### 4. Run Development Server
+### Environment Setup
 
 ```bash
+# Copy the example env file
+cp frontend/.env.example frontend/.env
+```
+
+Edit `frontend/.env` with your actual values:
+
+```env
+# Sanity CMS
+PUBLIC_SANITY_PROJECT_ID=your_project_id
+PUBLIC_SANITY_DATASET=**********
+PUBLIC_SANITY_API_VERSION=20**-**-**
+
+# Web3Forms
+PUBLIC_WEB3FORMS_KEY=your_web3forms_key
+PUBLIC_CONTACT_EMAIL=your@email.com
+```
+
+### Development
+
+```bash
+# Start Astro dev server
+cd frontend
+npm run dev
+
+# Start Sanity Studio (in a separate terminal)
+cd sanity
 npm run dev
 ```
 
-Visit http://localhost:4321
-
-### 5. Build for Production
+### Production Build
 
 ```bash
+cd frontend
 npm run build
 ```
 
-Preview the production build:
-
-```bash
-npm run preview
-```
-
-## 📄 Pages
-
-| Page | Route | Description |
-|------|-------|-------------|
-| Homepage | `/` | Hero section with featured projects |
-| Products | `/products` | Grid of all products with galleries |
-| Product Detail | `/products/[slug]` | Individual product with related projects |
-| Portfolio | `/portfolio` | All projects with before/after sliders |
-| Services | `/services` | Company services with descriptions |
-| About | `/about` | Company/engineer bio and contact info |
-| Contact | `/contact` | Contact form and information |
-
-## 🌍 Internationalization
-
-- Language toggle in header (top-right)
-- Preference stored in localStorage as `jpns_language`
-- All content fetched from Sanity with bilingual fields
-- RTL layout for Arabic, LTR for English
-- Uses Tailwind logical properties (`ms-`, `me-`, `ps-`, `pe-`)
-
-## 🎨 Color Palette
-
-```css
-Primary: #2E2D2B (Dark Charcoal)
-Secondary: #C5B080 (Muted Gold)
-Accent: #8B775C (Russet Brown)
-Extra-1: #F8F5EE (Creamy Off-White)
-Extra-2: #6A5D4D (Medium Gray-Brown)
-```
-
-## 📦 Project Structure
-
-```
-frontend/
-├── src/
-│   ├── components/          # Reusable components
-│   │   ├── BeforeAfterSlider.tsx
-│   │   ├── ImageGallery.tsx
-│   │   ├── ContactForm.tsx
-│   │   ├── Header.astro
-│   │   └── Footer.astro
-│   ├── layouts/             # Layout templates
-│   │   └── BaseLayout.astro
-│   ├── pages/               # Route pages
-│   │   ├── index.astro      # Homepage
-│   │   ├── products.astro
-│   │   ├── products/[slug].astro
-│   │   ├── portfolio.astro
-│   │   ├── services.astro
-│   │   ├── about.astro
-│   │   └── contact.astro
-│   ├── lib/                 # Utilities
-│   │   ├── sanity.ts        # Sanity client
-│   │   ├── types.ts         # TypeScript types
-│   │   └── i18n.ts          # Internationalization
-│   └── styles/
-│       └── global.css
-├── public/
-│   ├── favicon.svg
-│   └── robots.txt
-└── package.json
-```
-
-## 🚀 Deployment to Vercel
-
-### Method 1: Via Vercel CLI
-
-```bash
-npm install -g vercel
-vercel
-```
-
-### Method 2: Via GitHub
-
-1. Push code to GitHub repository
-2. Go to https://vercel.com
-3. Import your repository
-4. Configure:
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-   - **Framework Preset**: Astro
-5. Add environment variables
-6. Deploy!
-
-### Environment Variables (Vercel)
-
-Add these in Vercel dashboard:
-
-```
-PUBLIC_SANITY_PROJECT_ID=pch9lqf5
-PUBLIC_SANITY_DATASET=production
-PUBLIC_SANITY_API_VERSION=2024-12-01
-```
-
-## 🧪 Testing Checklist
-
-- [ ] Language toggle works (Arabic ↔ English)
-- [ ] Dark mode persists across pages
-- [ ] Before/After sliders are responsive
-- [ ] Product galleries auto-rotate and pause on hover
-- [ ] Contact form validates and submits
-- [ ] All navigation links work
-- [ ] Mobile hamburger menu functions
-- [ ] Images lazy load properly
-- [ ] SEO meta tags present on all pages
-- [ ] Reverse reference works (product → projects)
+---
 
 ## 📊 Performance
 
-Target metrics (Google PageSpeed Insights):
-- Performance: 90+
-- Accessibility: 90+
-- Best Practices: 90+
-- SEO: 90+
+This project has been optimized for performance with the following techniques:
 
-## 🔗 Related
+- ⚡ **Non-blocking font loading** — Google Fonts loaded via `media="print"` swap
+- 🖼️ **Automatic modern image formats** — WebP/AVIF via Sanity CDN `auto=format`
+- 📱 **Responsive images** — `srcset` serving 400px on mobile, 800px on desktop
+- 🔄 **Deferred hydration** — Non-critical React components use `client:idle` / `client:visible`
+- 🗜️ **Zero GSAP dependency** — Custom parallax with native `requestAnimationFrame`
+- 📦 **Aggressive caching** — 1-year immutable cache headers for static assets
+- 🔒 **Security headers** — CSP, X-Content-Type-Options, X-Frame-Options, Referrer-Policy
 
-- **Sanity Studio**: Run `npm run dev` in `../sanity` directory (http://localhost:3333)
-- **Sanity Project ID**: pch9lqf5
-- **Dataset**: production
+---
 
-## 📝 Notes
+## 🔐 Security
 
-- Make sure Sanity Studio has content before previewing the website
-- Update Web3Forms access key before deploying to production
-- The website handles empty states gracefully if no content exists
-- All images are optimized automatically by Sanity CDN
+- All API keys and sensitive data stored in environment variables
+- Content Security Policy (CSP) with strict whitelisting
+- `X-Content-Type-Options: nosniff`
+- `X-Frame-Options: DENY`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+- HTTPS enforced via `upgrade-insecure-requests`
 
-## 🤝 Support
+---
 
-For questions or issues, contact: mhamd200211@gmail.com
+## 🧪 Test Results
 
+This project has been tested across multiple industry-standard tools.
+
+### Google PageSpeed Insights
+
+| Metric             | Score      |
+| ------------------ | ---------- |
+| **Performance**    | 🟢 98/100  |
+| **Accessibility**  | 🟢 95/100  |
+| **Best Practices** | 🟢 100/100 |
+| **SEO**            | 🟢 100/100 |
+| FCP                | 0.8s       |
+| LCP                | 1.0s       |
+| TBT                | 0ms        |
+| CLS                | 0.002      |
+
+### Pingdom Website Speed Test
+
+| Metric                | Result        |
+| --------------------- | ------------- |
+| **Performance Grade** | 🟢 A (94/100) |
+| **Load Time**         | 294ms         |
+| **Page Size**         | 1.1 MB        |
+| **Requests**          | 14            |
+
+### Catchpoint WebPageTest
+
+| Metric               | Grade       |
+| -------------------- | ----------- |
+| First Byte Time      | 🟢 A (98.5) |
+| Keep-Alive           | 🟢 A (100)  |
+| Compress Transfer    | 🟢 A (100)  |
+| Compress Images      | 🟢 A (100)  |
+| Cache Static Content | 🟢 A (92)   |
+| Effective CDN Use    | 🟢 A (100)  |
+
+### Mozilla HTTP Observatory
+
+| Metric           | Result         |
+| ---------------- | -------------- |
+| **Score**        | 🟢 B+ (80/100) |
+| **Tests Passed** | 9/10           |
+
+### GTmetrix Performance Report
+
+| Metric          | Result |
+| --------------- | ------ |
+| **Grade**       | 🟢 A   |
+| **Performance** | 89%    |
+| **Structure**   | 100%   |
+| LCP             | 1.4s   |
+| TBT             | 40ms   |
+| CLS             | 0      |
+
+---
+
+## 📁 Key Features Deep Dive
+
+### 🏗️ Project Lifecycle Management
+
+Engineers can manage projects through Sanity Studio with a complete workflow:
+
+1. **Create** an active project with progress photos, location, and materials
+2. **Update** with new progress photos as construction continues
+3. **Complete** the project — requires an "After" image for quality assurance
+4. Active projects appear on `/current-projects`, completed ones on `/portfolio`
+
+### 🌐 Bilingual Architecture
+
+- All content supports Arabic (RTL) and English (LTR)
+- Custom `localeString` and `localeText` Sanity field types
+- Language middleware detects and persists user preference
+- Full i18n translation system with 50+ translation keys
+
+### 📸 Photo Gallery System
+
+- Multi-category photo support (each photo can belong to multiple categories)
+- Filterable gallery with smooth animations
+- Progress photo timelines for active projects
+
+---
+
+## 📄 License
+
+This project is proprietary software developed for **Jeddah Palaces for Natural Stone**.
+
+---
+
+<div align="center">
+
+**Developed by: Eng.Mohamed Ahmed Alzarzour**
+
+</div>

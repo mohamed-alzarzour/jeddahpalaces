@@ -16,6 +16,8 @@ try {
 } catch (error) {
   console.error('Failed to fetch contact info:', error);
 }
+const web3formsKey = import.meta.env.PUBLIC_WEB3FORMS_KEY;
+const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL;
 ---
 
 <BaseLayout 
@@ -128,7 +130,7 @@ try {
             <h2 class="text-3xl font-bold mb-6">
               {lang === 'ar' ? 'أرسل لنا رسالة' : 'Send us a Message'}
             </h2>
-            <ContactForm client:load />
+            <ContactForm client:load accessKey={web3formsKey} toEmail={contactEmail} />
           </div>
         </div>
       </div>

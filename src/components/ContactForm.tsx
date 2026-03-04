@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { getLanguage, t } from '../lib/i18n';
 
-export default function ContactForm() {
+interface ContactFormProps {
+    accessKey: string;
+    toEmail: string;
+}
+
+export default function ContactForm({ accessKey, toEmail }: ContactFormProps) {
     const lang = getLanguage();
     const [formData, setFormData] = useState({
         name: '',
@@ -56,13 +61,13 @@ export default function ContactForm() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    access_key: '7068255c-98ed-4ce9-8e10-2736bc049eb5',
+                    access_key: accessKey,
                     name: formData.name,
                     email: formData.email,
                     phone: formData.phone,
                     message: formData.message,
                     from_name: 'Jeddah Palaces Website',
-                    to_email: 'mhamd200211@gmail.com',
+                    to_email: toEmail,
                 }),
             });
 
