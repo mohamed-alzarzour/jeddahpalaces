@@ -53,7 +53,9 @@ jeddahpalaces/
 │   └── static/             # Studio assets
 │
 ├── gtmetrix-report.pdf     # Performance audit report
-└── README.md               # You are here
+├── README.md               # English project documentation (You are here)
+├── README_ar.md            # Arabic project documentation
+└── README_tr.md            # Turkish project documentation
 ```
 
 ---
@@ -167,6 +169,8 @@ Tested across **5 industry-standard tools** — all scores in the green:
 | [`frontend/README.md`](./frontend/README.md)   | Full frontend documentation — architecture, features, performance deep dive |
 | [`sanity/README.md`](./sanity/README.md)       | Sanity Studio docs — schemas, desk structure, project workflow              |
 | [`gtmetrix-report.pdf`](./gtmetrix-report.pdf) | Detailed GTmetrix performance audit                                         |
+| [`README_ar.md`](./README_ar.md)               | Arabic project documentation                                                |
+| [`README_tr.md`](./README_tr.md)               | Turkish project documentation                                               |
 
 ---
 
