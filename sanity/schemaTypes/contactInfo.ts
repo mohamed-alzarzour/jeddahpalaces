@@ -2,33 +2,33 @@ import {defineField, defineType} from 'sanity'
 
 export default defineType({
   name: 'contactInfo',
-  title: 'Contact Information',
+  title: 'معلومات التواصل',
   type: 'document',
   fields: [
     defineField({
       name: 'email',
-      title: 'Email',
+      title: 'البريد الإلكتروني',
       type: 'string',
       validation: (Rule) => Rule.required().email(),
     }),
     defineField({
       name: 'phone',
-      title: 'Phone Number',
+      title: 'رقم الهاتف',
       type: 'string',
     }),
     defineField({
       name: 'address',
-      title: 'Address',
+      title: 'العنوان',
       type: 'localeText',
     }),
     defineField({
       name: 'businessHours',
-      title: 'Business Hours',
+      title: 'ساعات العمل',
       type: 'localeText',
     }),
     defineField({
       name: 'socialMedia',
-      title: 'Social Media Links',
+      title: 'روابط التواصل الاجتماعي',
       type: 'array',
       of: [
         {
@@ -36,21 +36,21 @@ export default defineType({
           fields: [
             {
               name: 'platform',
-              title: 'Platform',
+              title: 'المنصة',
               type: 'string',
               options: {
                 list: [
-                  {title: 'Facebook', value: 'facebook'},
-                  {title: 'Instagram', value: 'instagram'},
-                  {title: 'Twitter/X', value: 'twitter'},
-                  {title: 'LinkedIn', value: 'linkedin'},
-                  {title: 'WhatsApp', value: 'whatsapp'},
+                  {title: 'فيسبوك', value: 'facebook'},
+                  {title: 'إنستغرام', value: 'instagram'},
+                  {title: 'تويتر / X', value: 'twitter'},
+                  {title: 'لينكدإن', value: 'linkedin'},
+                  {title: 'واتساب', value: 'whatsapp'},
                 ],
               },
             },
             {
               name: 'url',
-              title: 'URL',
+              title: 'الرابط',
               type: 'url',
             },
           ],

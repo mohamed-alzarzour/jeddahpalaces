@@ -2,23 +2,23 @@ import {defineField, defineType} from 'sanity'
 
 export default defineType({
   name: 'service',
-  title: 'Services',
+  title: 'الخدمات',
   type: 'document',
   fields: [
     defineField({
       name: 'title',
-      title: 'Service Title',
+      title: 'اسم الخدمة',
       type: 'localeString',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'description',
-      title: 'Description',
+      title: 'الوصف',
       type: 'localeText',
     }),
     defineField({
       name: 'icon',
-      title: 'Icon/Image',
+      title: 'الأيقونة / الصورة',
       type: 'image',
       options: {
         hotspot: true,
@@ -26,14 +26,14 @@ export default defineType({
     }),
     defineField({
       name: 'order',
-      title: 'Display Order',
+      title: 'ترتيب العرض',
       type: 'number',
       validation: (Rule) => Rule.required().min(1).max(10),
     }),
   ],
   preview: {
     select: {
-      title: 'title.en',
+      title: 'title.ar',
       media: 'icon',
     },
   },

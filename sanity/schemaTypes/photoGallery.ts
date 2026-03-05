@@ -2,22 +2,22 @@ import {defineField, defineType} from 'sanity'
 
 export default defineType({
   name: 'photoGallery',
-  title: 'Photo Gallery',
+  title: 'معرض الصور',
   type: 'document',
   fields: [
     defineField({
       name: 'title',
-      title: 'Gallery Title',
+      title: 'عنوان المعرض',
       type: 'localeString',
     }),
     defineField({
       name: 'description',
-      title: 'Gallery Description',
+      title: 'وصف المعرض',
       type: 'localeText',
     }),
     defineField({
       name: 'photos',
-      title: 'Photos',
+      title: 'الصور',
       type: 'array',
       of: [
         {
@@ -25,7 +25,7 @@ export default defineType({
           fields: [
             {
               name: 'image',
-              title: 'Image',
+              title: 'الصورة',
               type: 'image',
               options: {
                 hotspot: true,
@@ -34,36 +34,36 @@ export default defineType({
             },
             {
               name: 'caption',
-              title: 'Caption (Optional)',
+              title: 'التعليق (اختياري)',
               type: 'localeString',
             },
             {
               name: 'categories',
-              title: 'Categories (Optional)',
+              title: 'التصنيفات (اختياري)',
               type: 'array',
               of: [{type: 'string'}],
               options: {
                 list: [
-                  {title: 'Interior', value: 'interior'},
-                  {title: 'Exterior', value: 'exterior'},
-                  {title: 'Natural Stone', value: 'natural-stone'},
-                  {title: 'Marble', value: 'marble'},
-                  {title: 'Granite', value: 'granite'},
+                  {title: 'داخلي', value: 'interior'},
+                  {title: 'خارجي', value: 'exterior'},
+                  {title: 'حجر طبيعي', value: 'natural-stone'},
+                  {title: 'رخام', value: 'marble'},
+                  {title: 'جرانيت', value: 'granite'},
                   {title: 'GRC', value: 'grc'},
-                  {title: 'Other', value: 'other'},
+                  {title: 'أخرى', value: 'other'},
                 ],
               },
             },
           ],
           preview: {
             select: {
-              title: 'caption.en',
+              title: 'caption.ar',
               categories: 'categories',
               media: 'image',
             },
             prepare({title, categories, media}) {
               return {
-                title: title || 'Untitled Photo',
+                title: title || 'صورة بدون عنوان',
                 subtitle: Array.isArray(categories) ? categories.join(', ') : '',
                 media,
               }

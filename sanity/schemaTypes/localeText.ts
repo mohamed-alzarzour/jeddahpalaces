@@ -2,18 +2,18 @@ import {defineType} from 'sanity'
 
 export default defineType({
   name: 'localeText',
-  title: 'Localized Text',
+  title: 'نص طويل مترجم',
   type: 'object',
   fields: [
     {
       name: 'ar',
-      title: 'Arabic',
+      title: 'عربي',
       type: 'text',
       rows: 5,
     },
     {
       name: 'en',
-      title: 'English',
+      title: 'إنجليزي',
       type: 'text',
       rows: 5,
     },

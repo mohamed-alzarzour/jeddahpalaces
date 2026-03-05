@@ -2,42 +2,43 @@ import {defineField, defineType} from 'sanity'
 
 export default defineType({
   name: 'product',
-  title: 'Products',
+  title: 'المنتجات',
   type: 'document',
   fields: [
     defineField({
       name: 'name',
-      title: 'Product Name',
+      title: 'اسم المنتج',
       type: 'localeString',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
-      title: 'Slug',
+      title: 'الرابط',
       type: 'slug',
       options: {
         source: 'name.en',
         maxLength: 96,
       },
+      description: 'اضغط "Generate" لإنشاء الرابط تلقائياً',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'category',
-      title: 'Category',
+      title: 'التصنيف',
       type: 'string',
       options: {
         list: [
-          {title: 'Natural Stone', value: 'natural-stone'},
-          {title: 'Marble', value: 'marble'},
-          {title: 'Granite', value: 'granite'},
+          {title: 'حجر طبيعي', value: 'natural-stone'},
+          {title: 'رخام', value: 'marble'},
+          {title: 'جرانيت', value: 'granite'},
           {title: 'GRC', value: 'grc'},
-          {title: 'Accessories', value: 'accessories'},
+          {title: 'إكسسوارات', value: 'accessories'},
         ],
       },
     }),
     defineField({
       name: 'mainImage',
-      title: 'Main Image',
+      title: 'الصورة الرئيسية',
       type: 'image',
       options: {
         hotspot: true,
@@ -46,7 +47,7 @@ export default defineType({
     }),
     defineField({
       name: 'gallery',
-      title: 'Product Gallery',
+      title: 'معرض صور المنتج',
       type: 'array',
       of: [
         {
@@ -59,12 +60,12 @@ export default defineType({
     }),
     defineField({
       name: 'description',
-      title: 'Description',
+      title: 'الوصف',
       type: 'localeText',
     }),
     defineField({
       name: 'specifications',
-      title: 'Specifications',
+      title: 'المواصفات',
       type: 'array',
       of: [
         {
@@ -72,12 +73,12 @@ export default defineType({
           fields: [
             {
               name: 'label',
-              title: 'Label',
+              title: 'المسمى',
               type: 'localeString',
             },
             {
               name: 'value',
-              title: 'Value',
+              title: 'القيمة',
               type: 'localeString',
             },
           ],
@@ -87,7 +88,7 @@ export default defineType({
   ],
   preview: {
     select: {
-      title: 'name.en',
+      title: 'name.ar',
       media: 'mainImage',
     },
   },

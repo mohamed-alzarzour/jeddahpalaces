@@ -2,37 +2,37 @@ import {defineField, defineType} from 'sanity'
 
 export default defineType({
   name: 'aboutPage',
-  title: 'About Page',
+  title: 'صفحة من نحن',
   type: 'document',
   fields: [
     defineField({
       name: 'engineerName',
-      title: 'Engineer Name',
+      title: 'اسم المهندس',
       type: 'localeString',
     }),
     defineField({
       name: 'bio',
-      title: 'Biography',
+      title: 'السيرة الذاتية',
       type: 'localeText',
     }),
     defineField({
       name: 'experience',
-      title: 'Experience',
+      title: 'الخبرة',
       type: 'localeText',
     }),
     defineField({
       name: 'expertise',
-      title: 'Expertise',
+      title: 'التخصص',
       type: 'localeText',
     }),
     defineField({
       name: 'philosophy',
-      title: 'Philosophy',
+      title: 'الفلسفة',
       type: 'localeText',
     }),
     defineField({
       name: 'photo',
-      title: 'Engineer Photo (No Background)',
+      title: 'صورة المهندس (بدون خلفية)',
       type: 'image',
       options: {
         hotspot: true,

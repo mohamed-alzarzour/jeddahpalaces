@@ -2,17 +2,17 @@ import {defineType} from 'sanity'
 
 export default defineType({
   name: 'localeString',
-  title: 'Localized String',
+  title: 'نص مترجم',
   type: 'object',
   fields: [
     {
       name: 'ar',
-      title: 'Arabic',
+      title: 'عربي',
       type: 'string',
     },
     {
       name: 'en',
-      title: 'English',
+      title: 'إنجليزي',
       type: 'string',
     },
   ],

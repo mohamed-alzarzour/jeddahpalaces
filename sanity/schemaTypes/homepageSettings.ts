@@ -2,22 +2,22 @@ import {defineField, defineType} from 'sanity'
 
 export default defineType({
   name: 'homepageSettings',
-  title: 'Homepage Settings',
+  title: 'إعدادات الصفحة الرئيسية',
   type: 'document',
   fields: [
     defineField({
       name: 'heroTitle',
-      title: 'Hero Title',
+      title: 'عنوان القسم الرئيسي',
       type: 'localeString',
     }),
     defineField({
       name: 'heroDescription',
-      title: 'Hero Description',
+      title: 'وصف القسم الرئيسي',
       type: 'localeText',
     }),
     defineField({
       name: 'heroImage',
-      title: 'Hero Image (No Background)',
+      title: 'صورة القسم الرئيسي (بدون خلفية)',
       type: 'image',
       options: {
         hotspot: true,
@@ -25,7 +25,7 @@ export default defineType({
     }),
     defineField({
       name: 'featuredProjects',
-      title: 'Featured Projects',
+      title: 'المشاريع المميزة',
       type: 'array',
       of: [{type: 'reference', to: [{type: 'project'}]}],
     }),

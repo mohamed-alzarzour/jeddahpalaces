@@ -2,33 +2,34 @@ import {defineField, defineType} from 'sanity'
 
 export default defineType({
   name: 'project',
-  title: 'Projects',
+  title: 'المشاريع',
   type: 'document',
   fields: [
     defineField({
       name: 'title',
-      title: 'Project Title',
+      title: 'اسم المشروع',
       type: 'localeString',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
-      title: 'Slug',
+      title: 'الرابط',
       type: 'slug',
       options: {
         source: 'title.en',
         maxLength: 96,
       },
+      description: 'اضغط "Generate" لإنشاء الرابط تلقائياً من الاسم الإنجليزي',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'status',
-      title: 'Project Status',
+      title: 'حالة المشروع',
       type: 'string',
       options: {
         list: [
-          {title: '🏗️ Active (Under Construction)', value: 'active'},
-          {title: '✅ Completed', value: 'completed'},
+          {title: '🏗️ جاري التنفيذ', value: 'active'},
+          {title: '✅ مكتمل', value: 'completed'},
         ],
         layout: 'radio',
       },
@@ -37,81 +38,81 @@ export default defineType({
     }),
     defineField({
       name: 'description',
-      title: 'Description',
+      title: 'الوصف',
       type: 'localeText',
     }),
     defineField({
       name: 'location',
-      title: 'Location',
+      title: 'الموقع',
       type: 'localeString',
     }),
     defineField({
       name: 'startDate',
-      title: 'Start Date',
+      title: 'تاريخ البدء',
       type: 'date',
     }),
     defineField({
       name: 'beforeImage',
-      title: 'Before Image',
+      title: 'صورة قبل',
       type: 'image',
       options: {
         hotspot: true,
       },
-      description: 'Optional. If not set, the After Image will be used as the main image.',
+      description: 'اختياري. إذا لم يتم تعيينها، سيتم استخدام صورة بعد كصورة رئيسية.',
     }),
     defineField({
       name: 'afterImage',
-      title: 'After Image (Main Image)',
+      title: 'صورة بعد (الصورة الرئيسية)',
       type: 'image',
       options: {
         hotspot: true,
       },
-      description: 'The primary display image. Required for project completion.',
+      description: 'الصورة الرئيسية للعرض. مطلوبة لإكمال المشروع.',
       validation: (Rule) =>
         Rule.custom((value, context) => {
           const parent = context?.parent as {status?: string} | undefined
           if (parent?.status === 'completed' && !value) {
-            return 'After Image is required to mark the project as completed'
+            return 'صورة بعد مطلوبة لتحديد المشروع كمكتمل'
           }
           return true
         }),
     }),
     defineField({
       name: 'progressPhotos',
-      title: 'Progress Photos',
+      title: 'صور التقدم',
       type: 'array',
-      description: 'Construction progress photos — add photos as the project progresses.',
+      description: 'صور سير العمل — أضف صوراً كلما تقدم المشروع.',
       of: [
         {
           type: 'object',
           fields: [
             {
               name: 'image',
-              title: 'Photo',
+              title: 'الصورة',
               type: 'image',
               options: {hotspot: true},
               validation: (Rule) => Rule.required(),
             },
             {
               name: 'caption',
-              title: 'Caption',
+              title: 'التعليق',
               type: 'localeString',
             },
             {
               name: 'date',
-              title: 'Date Taken',
+              title: 'تاريخ الالتقاط',
               type: 'date',
             },
           ],
           preview: {
             select: {
-              title: 'caption.en',
+              title: 'caption.ar',
               subtitle: 'date',
               media: 'image',
             },
             prepare({title, subtitle, media}) {
               return {
-                title: title || 'Progress Photo',
+                title: title || 'صورة تقدم',
                 subtitle: subtitle || '',
                 media,
               }
@@ -125,38 +126,38 @@ export default defineType({
     }),
     defineField({
       name: 'relatedProducts',
-      title: 'Materials Used',
+      title: 'المواد المستخدمة',
       type: 'array',
       of: [{type: 'reference', to: [{type: 'product'}]}],
     }),
     defineField({
       name: 'category',
-      title: 'Category',
+      title: 'التصنيف',
       type: 'string',
       options: {
         list: [
-          {title: 'Interior', value: 'interior'},
-          {title: 'Exterior', value: 'exterior'},
-          {title: 'Both', value: 'both'},
+          {title: 'داخلي', value: 'interior'},
+          {title: 'خارجي', value: 'exterior'},
+          {title: 'داخلي وخارجي', value: 'both'},
         ],
       },
     }),
     defineField({
       name: 'year',
-      title: 'Year',
+      title: 'السنة',
       type: 'number',
     }),
   ],
   preview: {
     select: {
-      title: 'title.en',
+      title: 'title.ar',
       status: 'status',
       media: 'afterImage',
     },
     prepare({title, status, media}) {
       const emoji = status === 'completed' ? '✅' : '🏗️'
       return {
-        title: `${emoji} ${title || 'Untitled'}`,
+        title: `${emoji} ${title || 'بدون عنوان'}`,
         media,
       }
     },

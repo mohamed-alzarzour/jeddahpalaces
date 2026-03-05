@@ -7,7 +7,7 @@ import logo from './static/logo.png'
 
 export default defineConfig({
   name: 'default',
-  title: 'JPNS',
+  title: 'قصور جدة للحجر الطبيعي',
 
 
   projectId: 'pch9lqf5',
