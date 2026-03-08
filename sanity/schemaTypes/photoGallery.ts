@@ -54,6 +54,13 @@ export default defineType({
                 ],
               },
             },
+            {
+              name: 'order',
+              title: 'ترتيب العرض',
+              type: 'number',
+              description: 'رقم الترتيب — الأصغر يظهر أولاً',
+              initialValue: 999,
+            },
           ],
           preview: {
             select: {

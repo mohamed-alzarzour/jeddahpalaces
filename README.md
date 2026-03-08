@@ -47,10 +47,11 @@ jeddahpalaces/
 │   ├── public/             # Static assets
 │   └── vercel.json         # Security headers + caching
 │
-├── sanity/                 # Sanity Studio v3
+├── sanity/                 # Customized Sanity Studio v3
 │   ├── schemaTypes/        # 10 content schemas
+│   ├── components/         # Custom Dashboard & Navbar
 │   ├── desk/               # Custom desk structure
-│   └── static/             # Studio assets
+│   └── static/             # Studio assets & branding
 │
 ├── gtmetrix-report.pdf     # Performance audit report
 ├── README.md               # English project documentation (You are here)
@@ -131,6 +132,17 @@ jeddahpalaces/
 - Scroll-linked parallax effects and page transitions
 - Micro-animations on hover, floating action button, animated mobile menu
 
+### 🎛️ Customized Sanity Studio
+
+The CMS is not a default Sanity installation — it's a **fully customized, branded studio** designed for simplicity:
+
+- **Custom Dashboard** — A visual, icon-based homepage replaces the default Sanity desk, making navigation intuitive even for non-technical users
+- **Branded Dark Theme** — The entire studio matches the Jeddah Palaces gold-and-dark color palette for a cohesive brand experience
+- **Bilingual Content Editing** — Every text field provides side-by-side Arabic and English inputs, making multilingual content management effortless
+- **Mobile-Friendly Admin** — The custom dashboard and navigation are responsive, allowing content updates from any device
+- **Simplified Navigation** — Content is organized into clear sections (Pages, Projects, Products & Services) with emoji icons, so editors always know where to go
+- **One-Click Workflow** — Projects can be created, updated with progress photos, and marked as completed — all from a clean, straightforward interface
+
 ---
 
 ## 🧪 Test Results
@@ -151,14 +163,16 @@ Tested across **5 industry-standard tools** — all scores in the green:
 
 ## 🔐 Security
 
-| Measure                     | Status |
-| --------------------------- | ------ |
-| Environment-managed secrets | ✅     |
-| Content Security Policy     | ✅     |
-| X-Content-Type-Options      | ✅     |
-| X-Frame-Options             | ✅     |
-| Referrer-Policy             | ✅     |
-| HTTPS enforced              | ✅     |
+| Measure                      | Status |
+| ---------------------------- | ------ |
+| Environment-managed secrets  | ✅     |
+| Content Security Policy      | ✅     |
+| Strict-Transport-Security    | ✅     |
+| X-Content-Type-Options       | ✅     |
+| X-Frame-Options              | ✅     |
+| X-DNS-Prefetch-Control       | ✅     |
+| Referrer-Policy              | ✅     |
+| HTTPS enforced               | ✅     |
 
 ---
 

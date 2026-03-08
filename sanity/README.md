@@ -10,7 +10,7 @@
 
 ## 📋 Overview
 
-This is the **Sanity Studio** backend for the Jeddah Palaces website. It provides a customized content management interface for managing projects, products, services, and all website content in both **Arabic** and **English**.
+This is a **fully customized Sanity Studio** backend for the Jeddah Palaces website. Unlike a default Sanity installation, this studio has been redesigned from the ground up with a **custom dashboard, branded dark theme, and simplified navigation** — making it intuitive and easy to use even for non-technical content editors. It manages all website content in both **Arabic** and **English**.
 
 ---
 
@@ -63,10 +63,15 @@ The Studio uses a custom desk layout organized into:
 
 ## 🚀 CMS Features
 
-- **Custom Desk Structure** — Organized sidebar with settings, projects by status, products, and services
+- **Custom Dashboard** — A visual, icon-based homepage with emoji-labeled sections replaces the default Sanity desk, so editors always know where to go
+- **Branded Dark Theme** — The entire studio uses a custom gold-and-dark color palette (`#C5B080` / `#1a1918`) that matches the main website branding
+- **Custom Navbar** — A modified navigation bar with auto-aligned UI elements for a polished look
+- **Mobile-Responsive Admin** — The custom dashboard adapts to all screen sizes, allowing content updates from phones and tablets
+- **Simplified Navigation** — Content is organized into clear, intuitive sections: Page Settings, Projects, and Products & Services
+- **Bilingual Content Editing** — Every text field provides side-by-side Arabic and English inputs via custom `localeString` / `localeText` types
+- **One-Click Workflow** — Create projects, upload progress photos, and mark them as completed — all from a straightforward interface
+- **Custom Desk Structure** — Organized sidebar with settings, projects filtered by status, products, and services
 - **Singleton Documents** — Homepage, About, Contact, and Gallery managed as single-instance documents
-- **Project Status Workflow** — Projects flow from "Active" → "Completed" with automatic page routing
-- **Bilingual Content** — Every text field supports Arabic and English via custom `localeString` / `localeText` types
 - **Image Pipeline** — Sanity CDN with automatic WebP/AVIF, responsive sizing, and hotspot cropping
 - **Progress Photo Timelines** — Dated photos sorted chronologically for each project
 - **Multi-Category Gallery** — Photos tagged with multiple categories for filterable gallery display
@@ -89,10 +94,17 @@ sanity/
 │   ├── photoGallery.ts        # Gallery system
 │   ├── localeString.ts        # i18n short text
 │   └── localeText.ts          # i18n long text
+├── components/
+│   ├── Dashboard.tsx          # Custom visual dashboard
+│   └── CustomNavbar.tsx       # Custom navigation bar
 ├── desk/
 │   └── structure.ts           # Custom desk layout
 ├── static/
-│   └── logo.png               # Studio logo
+│   ├── logo.png               # Studio logo
+│   ├── favicon.ico            # Custom tab icon
+│   └── custom.css             # Studio theme overrides
+├── theme.ts                   # Custom dark theme
+├── global.d.ts                # TypeScript declarations
 ├── sanity.config.tsx          # Studio configuration
 ├── sanity.cli.ts              # CLI configuration
 ├── sanity.types.ts            # Auto-generated types

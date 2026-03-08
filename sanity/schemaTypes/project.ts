@@ -147,17 +147,39 @@ export default defineType({
       title: 'السنة',
       type: 'number',
     }),
+    defineField({
+      name: 'order',
+      title: 'ترتيب العرض',
+      type: 'number',
+      description: 'رقم الترتيب — الأصغر يظهر أولاً (يتم تعيينه تلقائياً)',
+      validation: (Rule) => Rule.min(1).integer(),
+    }),
   ],
+
+  // Auto-assign next order number for new projects
+  initialValue: async (_params, {getClient}) => {
+    const client = getClient({apiVersion: '2024-01-01'})
+    const maxOrder = await client.fetch<number | null>(
+      `*[_type == "project"] | order(order desc) [0].order`
+    )
+    return {
+      order: (maxOrder || 0) + 1,
+      status: 'active',
+    }
+  },
+
   preview: {
     select: {
       title: 'title.ar',
       status: 'status',
       media: 'afterImage',
+      order: 'order',
     },
-    prepare({title, status, media}) {
+    prepare({title, status, media, order}) {
       const emoji = status === 'completed' ? '✅' : '🏗️'
       return {
         title: `${emoji} ${title || 'بدون عنوان'}`,
+        subtitle: order ? `ترتيب: ${order}` : '',
         media,
       }
     },

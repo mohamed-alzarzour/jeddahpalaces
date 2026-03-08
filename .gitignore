@@ -9,8 +9,8 @@ dist/
 
 # Environment files
 .env
-.env.local
-.env.production
+.env.*
+!.env.example
 
 # OS files
 .DS_Store
@@ -25,4 +25,5 @@ dist/
 
 # Sanity
 *.pem
+*.key
 *.local

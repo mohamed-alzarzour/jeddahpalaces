@@ -13,7 +13,7 @@ export default function ContactForm({ accessKey, toEmail }: ContactFormProps) {
         email: '',
         phone: '',
         message: '',
-        honeypot: '', // Anti-spam
+        honeypot: '',
     });
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -44,9 +44,8 @@ export default function ContactForm({ accessKey, toEmail }: ContactFormProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Check honeypot
         if (formData.honeypot) {
-            return; // Bot detected
+            return;
         }
 
         if (!validate()) return;
@@ -54,7 +53,6 @@ export default function ContactForm({ accessKey, toEmail }: ContactFormProps) {
         setStatus('loading');
 
         try {
-            // Using Web3Forms
             const response = await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
                 headers: {
@@ -88,7 +86,6 @@ export default function ContactForm({ accessKey, toEmail }: ContactFormProps) {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-        // Clear error when user starts typing
         if (errors[e.target.name]) {
             setErrors({ ...errors, [e.target.name]: '' });
         }
@@ -97,7 +94,6 @@ export default function ContactForm({ accessKey, toEmail }: ContactFormProps) {
     return (
         <div className="relative">
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Honeypot field (hidden) */}
                 <input
                     type="text"
                     name="honeypot"
@@ -108,7 +104,6 @@ export default function ContactForm({ accessKey, toEmail }: ContactFormProps) {
                     autoComplete="off"
                 />
 
-                {/* Name Field */}
                 <div className="group">
                     <label htmlFor="name" className="block text-sm font-medium mb-2">
                         {t('name', lang)} <span className="text-red-500">*</span>
@@ -132,7 +127,6 @@ export default function ContactForm({ accessKey, toEmail }: ContactFormProps) {
                     )}
                 </div>
 
-                {/* Email Field */}
                 <div className="group">
                     <label htmlFor="email" className="block text-sm font-medium mb-2">
                         {t('email', lang)}
@@ -156,7 +150,6 @@ export default function ContactForm({ accessKey, toEmail }: ContactFormProps) {
                     )}
                 </div>
 
-                {/* Phone Field */}
                 <div className="group">
                     <label htmlFor="phone" className="block text-sm font-medium mb-2">
                         {t('phone', lang)} <span className="text-red-500">*</span>
@@ -180,7 +173,6 @@ export default function ContactForm({ accessKey, toEmail }: ContactFormProps) {
                     )}
                 </div>
 
-                {/* Message Field */}
                 <div className="group">
                     <label htmlFor="message" className="block text-sm font-medium mb-2">
                         {t('message', lang)} <span className="text-red-500">*</span>
@@ -204,7 +196,6 @@ export default function ContactForm({ accessKey, toEmail }: ContactFormProps) {
                     )}
                 </div>
 
-                {/* Submit Button */}
                 <button
                     type="submit"
                     disabled={status === 'loading'}
@@ -213,7 +204,6 @@ export default function ContactForm({ accessKey, toEmail }: ContactFormProps) {
                     {status === 'loading' ? t('sending', lang) : t('send', lang)}
                 </button>
 
-                {/* Status Messages */}
                 {status === 'success' && (
                     <div className="p-4 bg-green-500/10 border-2 border-green-500 text-green-700 dark:text-green-300 rounded-lg animate-fade-in" role="alert">
                         {t('successMessage', lang)}

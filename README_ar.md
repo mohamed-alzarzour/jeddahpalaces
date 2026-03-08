@@ -47,10 +47,11 @@ jeddahpalaces/
 │   ├── public/             # Static assets
 │   └── vercel.json         # Security headers + caching
 │
-├── sanity/                 # Sanity Studio v3
+├── sanity/                 # Customized Sanity Studio v3
 │   ├── schemaTypes/        # 10 content schemas
+│   ├── components/         # Custom Dashboard & Navbar
 │   ├── desk/               # Custom desk structure
-│   └── static/             # Studio assets
+│   └── static/             # Studio assets & branding
 │
 ├── gtmetrix-report.pdf     # Performance audit report
 ├── README.md               # English project documentation
@@ -131,6 +132,17 @@ jeddahpalaces/
 - تأثيرات التمرير (Parallax) وانتقالات الصفحات المرتبطة بالتمرير.
 - حركات دقيقة عند التمرير بالماوس، زر الإجراء العائم، وقائمة متحركة للجوال.
 
+### 🎛️ استوديو Sanity مخصص
+
+نظام إدارة المحتوى ليس تثبيتاً افتراضياً — إنه **استوديو مخصص بالكامل** مصمّم للبساطة وسهولة الاستخدام:
+
+- **لوحة تحكم مخصصة** — صفحة رئيسية بصرية بأيقونات تعبيرية تستبدل مكتب Sanity الافتراضي، مما يجعل التنقل بديهياً حتى للمستخدمين غير التقنيين
+- **سمة داكنة بالعلامة التجارية** — الاستوديو بالكامل يطابق لوحة ألوان قصور جدة الذهبية والداكنة
+- **تحرير محتوى ثنائي اللغة** — كل حقل نصي يوفر إدخال عربي وإنجليزي جنباً إلى جنب، مما يجعل إدارة المحتوى متعدد اللغات سهلة
+- **إدارة متوافقة مع الجوال** — لوحة التحكم المخصصة متجاوبة وتسمح بتحديث المحتوى من أي جهاز
+- **تنقل مبسّط** — المحتوى منظم في أقسام واضحة (الصفحات، المشاريع، المنتجات والخدمات) بأيقونات تعبيرية
+- **سير عمل بنقرة واحدة** — يمكن إنشاء المشاريع وتحديثها بصور التقدم وتمييزها كمكتملة — كله من واجهة نظيفة وبسيطة
+
 ---
 
 ## 🧪 نتائج الاختبار
@@ -151,14 +163,16 @@ jeddahpalaces/
 
 ## 🔐 الأمان
 
-| Measure                     | Status |
-| --------------------------- | ------ |
-| Environment-managed secrets | ✅     |
-| Content Security Policy     | ✅     |
-| X-Content-Type-Options      | ✅     |
-| X-Frame-Options             | ✅     |
-| Referrer-Policy             | ✅     |
-| HTTPS enforced              | ✅     |
+| الإجراء                          | الحالة |
+| ------------------------------ | ----- |
+| إدارة الأسرار عبر البيئة          | ✅    |
+| Content Security Policy        | ✅    |
+| Strict-Transport-Security      | ✅    |
+| X-Content-Type-Options         | ✅    |
+| X-Frame-Options                | ✅    |
+| X-DNS-Prefetch-Control         | ✅    |
+| Referrer-Policy                | ✅    |
+| فرض HTTPS                      | ✅    |
 
 ---
 

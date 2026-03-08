@@ -1,4 +1,3 @@
-// TypeScript types for Sanity schemas
 
 export interface LocaleString {
     ar?: string;

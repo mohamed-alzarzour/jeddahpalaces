@@ -1,4 +1,3 @@
-// Internationalization utilities
 
 export type Language = 'ar' | 'en';
 
@@ -42,7 +41,6 @@ export function getLocaleString(
     return localeString[lang] || localeString.en || localeString.ar || '';
 }
 
-// Translation dictionary for UI elements
 export const translations: Record<Language, Record<string, string>> = {
     ar: {
         home: 'الرئيسية',

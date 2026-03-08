@@ -85,11 +85,38 @@ export default defineType({
         },
       ],
     }),
+    defineField({
+      name: 'order',
+      title: 'ترتيب العرض',
+      type: 'number',
+      description: 'رقم الترتيب — الأصغر يظهر أولاً (يتم تعيينه تلقائياً)',
+      validation: (Rule) => Rule.min(1).integer(),
+    }),
   ],
+
+  // Auto-assign next order number for new products
+  initialValue: async (_params, {getClient}) => {
+    const client = getClient({apiVersion: '2024-01-01'})
+    const maxOrder = await client.fetch<number | null>(
+      `*[_type == "product"] | order(order desc) [0].order`
+    )
+    return {
+      order: (maxOrder || 0) + 1,
+    }
+  },
+
   preview: {
     select: {
       title: 'name.ar',
       media: 'mainImage',
+      order: 'order',
+    },
+    prepare({title, media, order}) {
+      return {
+        title: title || 'بدون عنوان',
+        subtitle: order ? `ترتيب: ${order}` : '',
+        media,
+      }
     },
   },
 })

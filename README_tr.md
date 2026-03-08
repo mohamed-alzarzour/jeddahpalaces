@@ -47,10 +47,11 @@ jeddahpalaces/
 │   ├── public/             # Static assets
 │   └── vercel.json         # Security headers + caching
 │
-├── sanity/                 # Sanity Studio v3
+├── sanity/                 # Customized Sanity Studio v3
 │   ├── schemaTypes/        # 10 content schemas
+│   ├── components/         # Custom Dashboard & Navbar
 │   ├── desk/               # Custom desk structure
-│   └── static/             # Studio assets
+│   └── static/             # Studio assets & branding
 │
 ├── gtmetrix-report.pdf     # Performance audit report
 ├── README.md               # English project documentation
@@ -131,6 +132,17 @@ jeddahpalaces/
 - Kaydırma ile bağlantılı paralaks efektleri ve sayfa geçişleri
 - Fareyle üzerine gelme, yüzen eylem düğmesi ve animasyonlu mobil menü üzerinde mikro animasyonlar
 
+### 🎛️ Özelleştirilmiş Sanity Studio
+
+İçerik Yönetim Sistemi varsayılan bir Sanity kurulumu değildir — basitlik ve kullanım kolaylığı için tasarlanmış, **tamamen özelleştirilmiş, markalı bir stüdyodur**:
+
+- **Özel Gösterge Paneli** — Varsayılan Sanity masasının yerini alan, emoji etiketli bölümlerle görsel, simge tabanlı bir ana sayfa. Teknik olmayan kullanıcılar için bile sezgisel
+- **Markalı Karanlık Tema** — Tüm stüdyo, tutarlı bir marka deneyimi için Jeddah Palaces altın ve koyu renk paletini kullanır
+- **Çift Dilli İçerik Düzenleme** — Her metin alanı yan yana Arapça ve İngilizce girişi sağlar, çok dilli içerik yönetimini zahmetsiz hale getirir
+- **Mobil Uyumlu Yönetim** — Özel gösterge paneli ve gezinme duyarlıdır, herhangi bir cihazdan içerik güncellemelerine olanak tanır
+- **Basitleştirilmiş Gezinme** — İçerik, emoji simgeleriyle net bölümler halinde düzenlenir (Sayfalar, Projeler, Ürünler ve Hizmetler)
+- **Tek Tıkla İş Akışı** — Projeler oluşturulabilir, ilerleme fotoğraflarıyla güncellenebilir ve tamamlanmış olarak işaretlenebilir — temiz ve anlaşılır bir arayüzden
+
 ---
 
 ## 🧪 Test Sonuçları
@@ -151,14 +163,16 @@ jeddahpalaces/
 
 ## 🔐 Güvenlik
 
-| Measure                     | Status |
-| --------------------------- | ------ |
-| Environment-managed secrets | ✅     |
-| Content Security Policy     | ✅     |
-| X-Content-Type-Options      | ✅     |
-| X-Frame-Options             | ✅     |
-| Referrer-Policy             | ✅     |
-| HTTPS enforced              | ✅     |
+| Önlem                          | Durum |
+| ------------------------------ | ----- |
+| Ortama göre yönetilen sırlar    | ✅    |
+| Content Security Policy        | ✅    |
+| Strict-Transport-Security      | ✅    |
+| X-Content-Type-Options         | ✅    |
+| X-Frame-Options                | ✅    |
+| X-DNS-Prefetch-Control         | ✅    |
+| Referrer-Policy                | ✅    |
+| HTTPS zorunluluğu              | ✅    |
 
 ---
 

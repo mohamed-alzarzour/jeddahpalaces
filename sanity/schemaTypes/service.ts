@@ -28,13 +28,34 @@ export default defineType({
       name: 'order',
       title: 'ترتيب العرض',
       type: 'number',
-      validation: (Rule) => Rule.required().min(1).max(10),
+      description: 'رقم الترتيب — الأصغر يظهر أولاً (يتم تعيينه تلقائياً)',
+      validation: (Rule) => Rule.required().min(1).integer(),
     }),
   ],
+
+  // Auto-assign next order number for new services
+  initialValue: async (_params, {getClient}) => {
+    const client = getClient({apiVersion: '2024-01-01'})
+    const maxOrder = await client.fetch<number | null>(
+      `*[_type == "service"] | order(order desc) [0].order`
+    )
+    return {
+      order: (maxOrder || 0) + 1,
+    }
+  },
+
   preview: {
     select: {
       title: 'title.ar',
       media: 'icon',
+      order: 'order',
+    },
+    prepare({title, media, order}) {
+      return {
+        title: title || 'بدون عنوان',
+        subtitle: order ? `ترتيب: ${order}` : '',
+        media,
+      }
     },
   },
 })
