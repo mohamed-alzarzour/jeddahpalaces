@@ -18,7 +18,7 @@ export function getLanguage(): Language {
 export function setLanguage(lang: Language): void {
     if (typeof window === 'undefined') return;
     localStorage.setItem(STORAGE_KEY, lang);
-    document.cookie = `${STORAGE_KEY}=${lang}; path=/; max-age=31536000`; // 1 year
+    document.cookie = `${STORAGE_KEY}=${lang}; path=/; max-age=31536000; SameSite=Lax; Secure`;
     window.dispatchEvent(new Event('language-change'));
 }
 
