@@ -14,6 +14,7 @@ import { getLanguage, getDirection } from '../lib/i18n';
 import { ClientRouter } from 'astro:transitions';
 import PageLoader from '../components/PageLoader.astro';
 import SpeedInsights from '@vercel/speed-insights/astro';
+import Analytics from '@vercel/analytics/astro';
 
 const { title, description, image, preloadImage } = Astro.props;
 const lang = Astro.locals.lang as 'ar' | 'en' || 'ar';
@@ -159,6 +160,7 @@ const ogImage = image || '/logo.png';
     
     <Footer />
     <SpeedInsights />
+    <Analytics />
   </body>
 </html>
 
