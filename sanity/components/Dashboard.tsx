@@ -1,6 +1,6 @@
 import {useCallback, useState, useEffect} from 'react'
 import {Card, Flex, Heading, Text, Grid, Stack, Box} from '@sanity/ui'
-import logo from '../static/logo.png'
+const logoUrl = '/static/logo.png'
 
 const sections = [
   {
@@ -99,7 +99,7 @@ export function Dashboard() {
             }}
           >
             <img
-              src={logo}
+              src={logoUrl}
               alt="قصور جدة"
               style={{width: '100%', height: '100%', objectFit: 'contain'}}
             />

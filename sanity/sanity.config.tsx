@@ -5,8 +5,9 @@ import {structure} from './desk/structure'
 import {jpnsTheme} from './theme'
 import {CustomNavbar} from './components/CustomNavbar'
 import {Dashboard} from './components/Dashboard'
-import logo from './static/logo.png'
 import './static/custom.css'
+
+const logoUrl = '/static/logo.png'
 
 if (typeof document !== 'undefined') {
   const root = document.documentElement
@@ -37,7 +38,7 @@ export default defineConfig({
     types: schemaTypes,
   },
 
-  icon: () => <img src={logo} alt="قصور جدة" style={{height: '24px', width: 'auto'}} />,
+  icon: () => <img src={logoUrl} alt="قصور جدة" style={{height: '24px', width: 'auto'}} />,
 
   studio: {
     components: {
